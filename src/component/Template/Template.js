@@ -19,30 +19,23 @@ export default class Template extends Component {
             /* element necessaire au fonctionnement du footer */
             itemsByColonne: 2, // nombre d'item par colonne
             elementFooter: {},
-            facebook: true,
-            github: true,
-            instagram: false,
-            linkedin: true,
-            pinterest: false,
-            twitter: false,
-            facebookLink: 'https://www.facebook.com/anthony.carreta/',
-            githubLink: 'https://github.com/BackGrowZ/',
-            instagramLink: 'https://www.instagram.com/',
-            linkedinLink: 'https://www.linkedin.com/in/anthony-carreta/',
-            pinterestLink: 'https://www.pinterest.fr/',
-            twitterLink: 'https://twitter.com/?lang=fr/',
-            copyright: 'Green Food by Anthony Carreta', // message du copyright
-            items: [['Connexion', '#0'], ['Créer un compte', '#1'], ['Aperitifs', '#2'], ['Entrées', '#3'], ['Plats', '#4'], ['Desserts', '#5'], ['Ajouter une recette', '#6'], ['Chercher une recette', '#7'], ['Mon menu de la semaine', '#8'], ['Ma liste de course', '#9']], // listes des items avec les link
+            facebook: [true, 'https://www.facebook.com/anthony.carreta/'],
+            github: [true, 'https://github.com/BackGrowZ/'],
+            instagram: [false, 'https://www.instagram.com/'],
+            linkedin: [true, 'https://www.linkedin.com/in/anthony-carreta/'],
+            pinterest: [false, 'https://www.pinterest.fr/'],
+            twitter: [false, 'https://twitter.com/?lang=fr/'],
+            copyright: 'Name Of Site by Anthony Carreta', // message du copyright
+            items: [['lien 1', '#link_1'], ['lien 2', '#link_2'], ['lien 3', '#link_3'], ['lien 4', '#link_4'], ['lien 5', '#link_5'], ['lien 6', '#link_6'], ['lien 7', '#link_7'], ['lien 8', '#link_8'], ['lien 9', '#link_9'], ['lien 10', '#link_10']], // listes des items avec les link
             color: [['Background', '#A7C700'], ['Element', 'black'], ['Copyright', 'black'], ['Separateur', 'black']]
         }
         this.updateState = this.updateState.bind(this)
         this.addColonne = this.addColonne.bind(this)
-
     }
 
     componentDidMount() {
         this.addColonne() // lance le script de mise en page du footer
-        this.paddingFooter()
+        this.paddingFooter()  
     }
 
     addColonne() { // mise en page du footer
@@ -103,6 +96,7 @@ export default class Template extends Component {
 
     render() {
         const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} /> : null
+        const items = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne}/> : null
 
         return (
             <Fragment>
@@ -120,13 +114,8 @@ export default class Template extends Component {
                             <li>Copyright</li>
                         </ul><br />
                         <div>
-                            <Items
-                                items={this.state.items}
-                                itemsByColonne={this.state.itemsByColonne}
-                                elementFooter={this.state.elementFooter}
-                                updateState={this.updateState}
-                                addColonne={this.addColonne}
-                            />
+                            {/* <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne}/> */}
+                            {items}
                         </div>
 
                     </div>

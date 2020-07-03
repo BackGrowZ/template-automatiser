@@ -6,15 +6,16 @@ import { logoFB2, logoGithub1, logoInsta, logoLinkedin, LogoPinterest2, logoTwit
 export default class Footer extends Component {
 
     render() {
-        const elementFooter = Object.values(this.props.elementFooter) // le footer mise en forme
-        const copyright = (this.props.copyright) ? <li className="copyright"><i>{this.props.copyright}</i></li> : null // affiche le copyright si il est pas null
+        const status = this.props
+        const elementFooter = Object.values(status.elementFooter) // le footer mise en forme
+        const copyright = (status.copyright) ? <li className="copyright"><i>{status.copyright}</i></li> : null // affiche le copyright si il est pas null
 
-        const facebook = (this.props.facebook) ? <a href={this.props.facebookLink}><img className='logoSocial' src={logoFB2} alt='Logo Facebook' /></a> : null
-        const twitter = (this.props.twitter) ? <a href={this.props.twitterLink}><img className='logoSocial' src={logoTwitter1} alt='Logo Twitter' /></a> : null
-        const instagram = (this.props.instagram) ? <a href={this.props.instagramLink}><img className='logoSocial' src={logoInsta} alt='Logo Instagram' /></a> : null
-        const linkedin = (this.props.linkedin) ? <a href={this.props.linkedinLink}><img className='logoSocial' src={logoLinkedin} alt='Logo Linkedin' /></a> : null
-        const github = (this.props.github) ? <a href={this.props.githubLink}><img className='logoSocial' src={logoGithub1} alt='Logo GitHub' /></a> : null
-        const pinterest = (this.props.pinterest) ? <a href={this.props.pinterestLink}><img className='logoSocial' src={LogoPinterest2} alt='Logo Pinterest' /></a> : null
+        const facebook = (status.facebook[0]) ? <a href={status.facebook[1]}><img className='logoSocial' src={logoFB2} alt='Logo Facebook' /></a> : null
+        const twitter = (status.twitter[0]) ? <a href={status.twitter[1]}><img className='logoSocial' src={logoTwitter1} alt='Logo Twitter' /></a> : null
+        const instagram = (status.instagram[0]) ? <a href={status.instagram[1]}><img className='logoSocial' src={logoInsta} alt='Logo Instagram' /></a> : null
+        const linkedin = (status.linkedin[0]) ? <a href={status.linkedin[1]}><img className='logoSocial' src={logoLinkedin} alt='Logo Linkedin' /></a> : null
+        const github = (status.github[0]) ? <a href={status.github[1]}><img className='logoSocial' src={logoGithub1} alt='Logo GitHub' /></a> : null
+        const pinterest = (status.pinterest[0]) ? <a href={status.pinterest[1]}><img className='logoSocial' src={LogoPinterest2} alt='Logo Pinterest' /></a> : null
 
         const social = <div className='contenantSocial'>{facebook}{twitter}{instagram}{linkedin}{github}{pinterest}</div>
 
