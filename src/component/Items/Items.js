@@ -32,20 +32,20 @@ export default class Items extends Component {
             itemsAdd: '',
             linkAdd: '',
         })
-        this.props.updateState('items',result)
+        this.props.updateState('items', result)
         setTimeout(() => this.props.addColonne(), 1)
     }
 
     removeitems(id) {
         let newListeItems = this.props.items.filter(result => result !== this.props.items[id])
-        this.props.updateState('items',newListeItems)
+        this.props.updateState('items', newListeItems)
         setTimeout(() => this.props.addColonne(), 1)
     }
 
     handleInputChange(e) {
         const target = e.target;
         const value = target.value;
-        const name = target.id;        
+        const name = target.id;
         this.setState({ [name]: value });
     }
 
@@ -55,31 +55,41 @@ export default class Items extends Component {
         const items = this.props.items
         const tabItems = items.map(result => (items.indexOf(result) % 2) ?
             <tr key={items.indexOf(result)} style={{ backgroundColor: '#9e9e9e' }}>
-                <th key={`id` + items.indexOf(result)} scope="row">{items.indexOf(result)}</th>
+                <th key={`id` + items.indexOf(result)} scope="row">{items.indexOf(result) + 1}</th>
                 <td key={`nom` + items.indexOf(result)}>{result[0]}</td>
                 <td key={`lien` + items.indexOf(result)}>{result[1]}</td>
-                <td key={`button` + items.indexOf(result)}><i style={{ color: 'red', cursor: 'pointer' }} className="fas fa-times" onClick={() => this.removeitems(items.indexOf(result))} /></td>
+                <td key={`button` + items.indexOf(result)}>
+                    <a href={`#id=${items.indexOf(result)}`}>
+                        <i style={{ color: '#0089c8', cursor: 'pointer', marginRight: '5px' }} onClick={() => this.props.updateState('editStatus', true)} className="fas fa-pen" />
+                    </a>
+                    <i style={{ color: 'red', cursor: 'pointer' }} className="fas fa-times" onClick={() => this.removeitems(items.indexOf(result))} />
+                </td>
             </tr>
             :
             <tr key={items.indexOf(result)}>
-                <th key={`id` + items.indexOf(result)} scope="row">{items.indexOf(result)}</th>
+                <th key={`id` + items.indexOf(result)} scope="row">{items.indexOf(result) + 1}</th>
                 <td key={`nom` + items.indexOf(result)}>{result[0]}</td>
                 <td key={`lien` + items.indexOf(result)}>{result[1]}</td>
-                <td key={`button` + items.indexOf([result])}><i style={{ color: 'red', cursor: 'pointer' }} className="fas fa-times" onClick={() => this.removeitems(items.indexOf(result))} /></td>
+                <td key={`button` + items.indexOf(result)}>
+                    <a href={`#id=${items.indexOf(result)}`}>
+                        <i style={{ color: '#0089c8', cursor: 'pointer', marginRight: '5px' }} onClick={() => this.props.updateState('editStatus', true)} className="fas fa-pen" />
+                    </a>
+                    <i style={{ color: 'red', cursor: 'pointer' }} className="fas fa-times" onClick={() => this.removeitems(items.indexOf(result))} />
+                </td>
             </tr>
         )
 
         /* Derniere ligne du tableau / Ajout Items */
         const addItemsValue = (items.length % 2) ?
             <tr style={{ backgroundColor: '#9e9e9e' }}>
-                <th scope="row">{items.length}</th>
+                <th scope="row">{items.length + 1}</th>
                 <td ><input id='itemsAdd' placeholder="nom de l'élement" onChange={this.handleInputChange} value={this.state.itemsAdd} /></td>
                 <td ><input id='linkAdd' placeholder="lien de l'élement" onChange={this.handleInputChange} value={this.state.linkAdd} /></td>
                 <td ><i style={{ color: 'green', cursor: 'pointer' }} className="fas fa-check" onClick={this.submitAddItems} /></td>
             </tr>
             :
             <tr>
-                <th scope="row">{items.length}</th>
+                <th scope="row">{items.length + 1}</th>
                 <td ><input id='itemsAdd' placeholder="nom de l'élement" onChange={this.handleInputChange} value={this.state.itemsAdd} /></td>
                 <td ><input id='linkAdd' placeholder="lien de l'élement" onChange={this.handleInputChange} value={this.state.linkAdd} /></td>
                 <td ><i style={{ color: 'green', cursor: 'pointer' }} className="fas fa-check" onClick={this.submitAddItems} /></td>
@@ -92,7 +102,7 @@ export default class Items extends Component {
                 <table className="table">
                     <thead>
                         <tr style={{ backgroundColor: '#464747', color: 'white' }}>
-                            <th scope="col">ID</th>
+                            <th scope="col">Position</th>
                             <th scope="col">Nom</th>
                             <th scope="col">Lien</th>
                             <th scope="col">Action</th>
@@ -104,6 +114,7 @@ export default class Items extends Component {
                     </tbody>
                 </table>
             </Fragment>
+
 
         return tabAllItems
     }

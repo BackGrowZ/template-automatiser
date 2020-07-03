@@ -1,17 +1,20 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { v4 as uuidv4 } from 'uuid'; // pour les keys
 import './template.css'
 import Footer from '../Footer/Footer';
+import Editeur from '../Editeur/Editeur'
 import Items from '../Items/Items';
 
 export default class Template extends Component {
     constructor(props) {
         super(props)
         this.state = {
+            editStatus: false, // acces a l'editeur
             status: false,
             itemsStatus: true, // tableau Items footer
             colorsStatus: false, // tableau couleurs footer
             paddingfooter: null,
+            heightMain: null,
 
             /* element necessaire au fonctionnement du footer */
             itemsByColonne: 2, // nombre d'item par colonne
@@ -75,61 +78,78 @@ export default class Template extends Component {
 
     updateState(name, value) { this.setState({ [name]: value }) }
 
+    heightOfMain(footer) {
+
+        const hauteurTotal = window.innerHeight
+        const hauteurMain = hauteurTotal - footer
+        this.setState({
+            heightMain: hauteurMain
+        })
+
+    }
+
+
     paddingFooter() {
         if (document.getElementById('allColonne').offsetHeight) { // permet de savoir quand il a finit de load le footer
             let padding = document.getElementById('footer').offsetHeight // hauteur du foooter
             this.setState({
-                paddingfooter: padding + 50
+                paddingfooter: padding + 20
             })
+            this.heightOfMain(padding)
         } else {
             setTimeout(() => this.paddingFooter(), 100)
         }
     }
 
     render() {
+        const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} /> : null
 
         return (
-            <div className='main' style={{ paddingBottom: this.state.paddingfooter }}>
+            <Fragment>
 
-                <div style={{ backgroundColor: 'white' }}>
-                    <h1>Footer</h1>
-                    <h2>Structure du footer</h2>
-                    <ul>
-                        <li>Element et lien</li>
-                        <li>Couleur</li>
-                        <li>Réseau sociaux</li>
-                        <li>Copyright</li>
-                    </ul><br />
-                    <div>
-                        <Items
-                            items={this.state.items}
-                            itemsByColonne={this.state.itemsByColonne}
-                            elementFooter={this.state.elementFooter}
-                            updateState={this.updateState}
-                            addColonne={this.addColonne}
-                        />
+                {edit}
+                <div className='main' style={{ minHeight: this.state.heightMain, paddingBottom: this.state.paddingfooter }}>
+
+                    <div style={{ backgroundColor: 'white' }}>
+                        <h1>Footer</h1>
+                        <h2>Structure du footer</h2>
+                        <ul>
+                            <li>Element et lien</li>
+                            <li>Couleur</li>
+                            <li>Réseau sociaux</li>
+                            <li>Copyright</li>
+                        </ul><br />
+                        <div>
+                            <Items
+                                items={this.state.items}
+                                itemsByColonne={this.state.itemsByColonne}
+                                elementFooter={this.state.elementFooter}
+                                updateState={this.updateState}
+                                addColonne={this.addColonne}
+                            />
+                        </div>
+
                     </div>
-
+                    <Footer
+                        items={this.state.items}
+                        copyright={this.state.copyright}
+                        itemsByColonne={this.state.itemsByColonne}
+                        elementFooter={this.state.elementFooter}
+                        facebook={this.state.facebook}
+                        github={this.state.github}
+                        instagram={this.state.instagram}
+                        linkedin={this.state.linkedin}
+                        pinterest={this.state.pinterest}
+                        twitter={this.state.twitter}
+                        facebookLink={this.state.facebookLink}
+                        githubLink={this.state.githubLink}
+                        instagramLink={this.state.instagramLink}
+                        linkedinLink={this.state.linkedinLink}
+                        pinterestLink={this.state.pinterestLink}
+                        twitterLink={this.state.twitterLink}
+                    />
                 </div>
-                <Footer
-                    items={this.state.items}
-                    copyright={this.state.copyright}
-                    itemsByColonne={this.state.itemsByColonne}
-                    elementFooter={this.state.elementFooter}
-                    facebook={this.state.facebook}
-                    github={this.state.github}
-                    instagram={this.state.instagram}
-                    linkedin={this.state.linkedin}
-                    pinterest={this.state.pinterest}
-                    twitter={this.state.twitter}
-                    facebookLink={this.state.facebookLink}
-                    githubLink={this.state.githubLink}
-                    instagramLink={this.state.instagramLink}
-                    linkedinLink={this.state.linkedinLink}
-                    pinterestLink={this.state.pinterestLink}
-                    twitterLink={this.state.twitterLink}
-                />
-            </div>
+            </Fragment>
         )
     }
 }

@@ -1,14 +1,6 @@
-html {
-    height: 100%;
-}
-
-body {
-    height: 100%;
-}
-
 .main{
+    margin-top: -21px;
     position: relative;
-    min-height: 100%;
 }
 
 table {
