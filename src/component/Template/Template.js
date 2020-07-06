@@ -4,14 +4,16 @@ import './template.css'
 import Footer from '../Footer/Footer';
 import Editeur from '../Editeur/Editeur'
 import Items from '../Items/Items';
+import Couleur from '../Couleur/Couleur';
+import LinkCustomer from '../LinkCustomer/LinkCustomer';
+
 
 export default class Template extends Component {
     constructor(props) {
         super(props)
         this.state = {
             editStatus: false, // acces a l'editeur
-            status: false,
-            itemsStatus: true, // tableau Items footer
+            itemsStatus: false, // tableau Items footer
             colorsStatus: false, // tableau couleurs footer
             paddingfooter: null,
             heightMain: null,
@@ -27,7 +29,7 @@ export default class Template extends Component {
             twitter: [false, 'https://twitter.com/?lang=fr/'],
             copyright: 'Name Of Site by Anthony Carreta', // message du copyright
             items: [['lien 1', '#link_1'], ['lien 2', '#link_2'], ['lien 3', '#link_3'], ['lien 4', '#link_4'], ['lien 5', '#link_5'], ['lien 6', '#link_6'], ['lien 7', '#link_7'], ['lien 8', '#link_8'], ['lien 9', '#link_9'], ['lien 10', '#link_10']], // listes des items avec les link
-            color: [['Background', '#A7C700'], ['Element', 'black'], ['Copyright', 'black'], ['Separateur', 'black']]
+            color: [['Background', '#A7C700'], ['Element', '#000000'], ['Copyright', '#000000'], ['Separateur', '#000000']]
         }
         this.updateState = this.updateState.bind(this)
         this.addColonne = this.addColonne.bind(this)
@@ -35,8 +37,11 @@ export default class Template extends Component {
 
     componentDidMount() {
         this.addColonne() // lance le script de mise en page du footer
-        this.paddingFooter()  
+        this.paddingFooter()
     }
+
+
+
 
     addColonne() { // mise en page du footer
         let all = {} // contenant de toute la mise en page 
@@ -69,7 +74,17 @@ export default class Template extends Component {
         }
     }
 
-    updateState(name, value) { this.setState({ [name]: value }) }
+    updateState(name, value) {
+        if (name === 'color') {
+            document.getElementsByClassName('footer')[0].style["background-color"] = value[0][1]
+            document.getElementsByClassName('copyright')[0].style["color"] = value[2][1]
+            document.getElementsByClassName('footerHR')[0].style["border-color"] = value[3][1]
+            for (let x = 0; x < this.state.items.length; x++) {
+                document.getElementsByClassName('footerItems')[x].style["color"] = value[1][1]
+            }
+        }
+        this.setState({ [name]: value })
+    }
 
     heightOfMain(footer) {
 
@@ -86,7 +101,7 @@ export default class Template extends Component {
         if (document.getElementById('allColonne').offsetHeight) { // permet de savoir quand il a finit de load le footer
             let padding = document.getElementById('footer').offsetHeight // hauteur du foooter
             this.setState({
-                paddingfooter: padding + 20
+                paddingfooter: padding
             })
             this.heightOfMain(padding)
         } else {
@@ -95,27 +110,32 @@ export default class Template extends Component {
     }
 
     render() {
-        const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} /> : null
-        const items = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne}/> : null
+        const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} /> : null
+        const items = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
+        const color = (this.state.colorsStatus) ? <Couleur color={this.state.color} updateState={this.updateState} /> : null
 
+        /* TEST */
+
+        /*--------------*/
         return (
             <Fragment>
 
                 {edit}
-                <div className='main' style={{ minHeight: this.state.heightMain, paddingBottom: this.state.paddingfooter }}>
+                <div className='main' style={{ minHeight: this.state.heightMain - 15, paddingBottom: this.state.paddingfooter + 15 }}>
 
-                    <div style={{ backgroundColor: 'white' }}>
+                    <div>
                         <h1>Footer</h1>
                         <h2>Structure du footer</h2>
                         <ul>
-                            <li>Element et lien</li>
-                            <li>Couleur</li>
+                            <li onClick={() => this.setState({ itemsStatus: !this.state.itemsStatus })}><LinkCustomer link='/items/'>Element et lien</LinkCustomer></li>
+                            <li onClick={() => this.setState({ colorsStatus: !this.state.colorsStatus })}><LinkCustomer link='/color/'>Couleur</LinkCustomer></li>
                             <li>Réseau sociaux</li>
-                            <li>Copyright</li>
-                        </ul><br />
+                            <li> <LinkCustomer link='/color/'>Copyright</LinkCustomer> </li>
+                        </ul>
                         <div>
                             {/* <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne}/> */}
                             {items}
+                            {color}
                         </div>
 
                     </div>
