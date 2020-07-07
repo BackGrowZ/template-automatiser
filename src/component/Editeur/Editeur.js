@@ -17,6 +17,8 @@ export default class Editeur extends Component {
             itemsPosition: [],
             /* Couleur */
             pickerColor: '',
+            /* Reseau */
+            reseauLink: '',
 
 
         }
@@ -40,7 +42,6 @@ export default class Editeur extends Component {
             switch (this.state.pathname) {
                 case '/items/':
                     this.setState({
-                        id: this.state.hash.slice(4),
                         itemsActualPosition: `${this.state.hash.slice(4)} (actuelle)`
                     })
                     setTimeout(() => this.setItems(), 100)
@@ -53,10 +54,17 @@ export default class Editeur extends Component {
                     })
                     break;
 
+                case '/reseau/':
+                    let reseau = this.props.reseau[this.state.id][2]
+                    this.setState({
+                        reseauLink: reseau
+                    })
+                    break;
+
                 default:
                     break;
             }
-        } 
+        }
         else setTimeout(() => this.init(), 100)
     }
 
@@ -104,7 +112,14 @@ export default class Editeur extends Component {
         this.props.updateState('items', newItems)
         setTimeout(() => this.props.addColonne(), 100)
         this.noScroll(false)
+    }
 
+    updateNetwork() {
+        let id = parseInt(this.state.id, 10)
+        let newReseau = this.props.reseau
+        newReseau[id] = [newReseau[id][0], newReseau[id][1], this.state.reseauLink]
+        this.props.updateState('reseau', newReseau)
+        this.noScroll(false)
     }
 
     noScroll(state) {
@@ -152,11 +167,21 @@ export default class Editeur extends Component {
                 </div>
             ) : null
 
+        const reseau = (this.state.pathname === '/reseau/') ?
+            (
+                <div>
+                    <h3 style={{ color: 'white' }}>{this.props.reseau[this.state.id][0]}</h3>
+                    <input id='reseauLink' onChange={this.handleInputChange} value={this.state.reseauLink} />
+                    <button onClick={() => this.updateNetwork()}>Validé</button>
+                </div>
+            ) : null
+
         const template =
             <div className='mainEdit'>
                 <button onClick={() => this.noScroll(false)} style={{ position: 'absolute', top: '0', right: '0', zoom: '1.5' }}><i style={{ color: 'red', cursor: 'pointer' }} onClick={() => this.noScroll(false)} className="fas fa-times" /></button>
                 {items}
                 {color}
+                {reseau}
             </div>
 
         return template

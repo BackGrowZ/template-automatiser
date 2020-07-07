@@ -6,6 +6,7 @@ import Editeur from '../Editeur/Editeur'
 import Items from '../Items/Items';
 import Couleur from '../Couleur/Couleur';
 import LinkCustomer from '../LinkCustomer/LinkCustomer';
+import Network from '../Network/Network';
 
 export default class Template extends Component {
     constructor(props) {
@@ -118,10 +119,10 @@ export default class Template extends Component {
     }
 
     render() {
-        const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} /> : null
+        const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} reseau={this.state.reseau} /> : null
         const items = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
         const color = (this.state.colorsStatus) ? <Couleur color={this.state.color} updateState={this.updateState} /> : null
-        const reseau = (this.state.socialStatus) ? <Couleur reseau={this.state.color} updateState={this.updateState} /> : null
+        const reseau = (this.state.socialStatus) ? <Network reseau={this.state.reseau} updateState={this.updateState} /> : null
         return (
             <Fragment>
                 {edit}
@@ -139,6 +140,7 @@ export default class Template extends Component {
                         <div>
                             {items}
                             {color}
+                            {reseau}
                         </div>
 
                     </div>

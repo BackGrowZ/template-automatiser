@@ -30,12 +30,12 @@ export default class Footer extends Component {
         const elementFooter = Object.values(status.elementFooter) // le footer mise en forme
         const copyright = (status.copyright) ? <li className="copyright"><i>{status.copyright}</i></li> : null // affiche le copyright si il est pas null
 
-        const facebook  = (reseau[0][1]) ? <a href={reseau[0][2]}>  <img className='logoSocial' src={logoFB2}         alt='Logo Facebook' />    </a> : null
-        const github    = (reseau[1][1]) ? <a href={reseau[1][2]}>  <img className='logoSocial' src={logoGithub1}     alt='Logo GitHub' />      </a> : null
-        const instagram = (reseau[2][1]) ? <a href={reseau[2][2]}>  <img className='logoSocial' src={logoInsta}       alt='Logo Instagram' />   </a> : null
-        const linkedin  = (reseau[3][1]) ? <a href={reseau[3][2]}>  <img className='logoSocial' src={logoLinkedin}    alt='Logo Linkedin' />    </a> : null
-        const pinterest = (reseau[4][1]) ? <a href={reseau[4][2]}>  <img className='logoSocial' src={LogoPinterest2}  alt='Logo Pinterest' />   </a> : null
-        const twitter   = (reseau[5][1]) ? <a href={reseau[5][2]}>  <img className='logoSocial' src={logoTwitter1}    alt='Logo Twitter' />     </a> : null
+        const facebook  = (reseau[0][1]) ? <a className='socialLink' href={reseau[0][2]}>  <img className='logoSocial' src={logoFB2}         alt='Logo Facebook' />    </a> : null
+        const github    = (reseau[1][1]) ? <a className='socialLink' href={reseau[1][2]}>  <img className='logoSocial' src={logoGithub1}     alt='Logo GitHub' />      </a> : null
+        const instagram = (reseau[2][1]) ? <a className='socialLink' href={reseau[2][2]}>  <img className='logoSocial' src={logoInsta}       alt='Logo Instagram' />   </a> : null
+        const linkedin  = (reseau[3][1]) ? <a className='socialLink' href={reseau[3][2]}>  <img className='logoSocial' src={logoLinkedin}    alt='Logo Linkedin' />    </a> : null
+        const pinterest = (reseau[4][1]) ? <a className='socialLink' href={reseau[4][2]}>  <img className='logoSocial' src={LogoPinterest2}  alt='Logo Pinterest' />   </a> : null
+        const twitter   = (reseau[5][1]) ? <a className='socialLink' href={reseau[5][2]}>  <img className='logoSocial' src={logoTwitter1}    alt='Logo Twitter' />     </a> : null
 
         const social = <div className='contenantSocial'>{facebook}{twitter}{instagram}{linkedin}{github}{pinterest}</div>
 

@@ -58,7 +58,7 @@ footer {
     border-color: black
 }
 
-.itemLink {
+.itemLink, .socialLink {
     text-decoration: none;
     color: black;
 }
