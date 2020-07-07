@@ -16,7 +16,7 @@ export default class Editeur extends Component {
             itemsLink: '',
             itemsPosition: [],
             /* Couleur */
-            pickerColor: '#A7C700',
+            pickerColor: '',
 
 
         }
@@ -32,7 +32,7 @@ export default class Editeur extends Component {
             hash: window.location.hash,
             id: window.location.hash.slice(4)
         })
-        this.init()
+        setTimeout(() => this.init(), 100)
     }
 
     init() {
@@ -56,7 +56,8 @@ export default class Editeur extends Component {
                 default:
                     break;
             }
-        } else setTimeout(() => this.init(), 100)
+        } 
+        else setTimeout(() => this.init(), 100)
     }
 
     setItems() {
@@ -78,7 +79,9 @@ export default class Editeur extends Component {
                 itemsPosition: position,
                 itemsActualPosition: `${id} (actuelle)`
             })
-        } else setTimeout(() => this.setItems(), 100)
+        } else {
+            setTimeout(() => this.setItems(), 100)
+        }
     }
 
     updateColor() {

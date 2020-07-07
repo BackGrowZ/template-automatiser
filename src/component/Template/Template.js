@@ -7,7 +7,6 @@ import Items from '../Items/Items';
 import Couleur from '../Couleur/Couleur';
 import LinkCustomer from '../LinkCustomer/LinkCustomer';
 
-
 export default class Template extends Component {
     constructor(props) {
         super(props)
@@ -38,10 +37,58 @@ export default class Template extends Component {
     componentDidMount() {
         this.addColonne() // lance le script de mise en page du footer
         this.paddingFooter()
+        window.addEventListener('resize', () => this.handleResize()) // surveille le resize pour redimentionner le main
     }
 
+    /* ===== MISE EN PAGE (PAGE PRINCIPAL) ===== */
 
+    handleResize() { // verrifie si le main a besoin d'etre resize
+        if (this.state.heightMain) {
+            let paddingFooter = document.getElementById('footer').offsetHeight // hauteur du foooter
+            let hauteurMain = window.innerHeight - paddingFooter
+            console.log('resized to: ', window.innerWidth, 'x', window.innerHeight)
+            if (this.state.heightMain !== hauteurMain) {
+                this.setState({
+                    paddingfooter: paddingFooter,
+                    heightMain: hauteurMain
+                })
+            } else console.log('=> resized to: ', window.innerWidth, 'x', window.innerHeight)
+        } else setTimeout(() => this.handleResize(), 100)
+    }
 
+    paddingFooter() { // config au rendu
+        if (document.getElementById('allColonne').offsetHeight) { // permet de savoir quand il a finit de load le footer
+            let padding = document.getElementById('footer').offsetHeight // hauteur du foooter
+            this.setState({
+                paddingfooter: padding
+            })
+            this.heightOfMain(padding)
+        } else {
+            setTimeout(() => this.paddingFooter(), 100)
+        }
+    }
+
+    heightOfMain(footer) { // config au rendu
+        const hauteurTotal = window.innerHeight
+        const hauteurMain = hauteurTotal - footer
+        this.setState({
+            heightMain: hauteurMain
+        })
+    }
+
+    /* ===== FIN MISE EN PAGE (PAGE PRINCIPAL) ===== */
+
+    updateState(name, value) { // pour setState a partir des component enfant 
+        if (name === 'color') {
+            document.getElementsByClassName('footer')[0].style["background-color"] = value[0][1]
+            document.getElementsByClassName('copyright')[0].style["color"] = value[2][1]
+            document.getElementsByClassName('footerHR')[0].style["border-color"] = value[3][1]
+            for (let x = 0; x < this.state.items.length; x++) {
+                document.getElementsByClassName('footerItems')[x].style["color"] = value[1][1]
+            }
+        }
+        this.setState({ [name]: value })
+    }
 
     addColonne() { // mise en page du footer
         let all = {} // contenant de toute la mise en page 
@@ -74,52 +121,12 @@ export default class Template extends Component {
         }
     }
 
-    updateState(name, value) {
-        if (name === 'color') {
-            document.getElementsByClassName('footer')[0].style["background-color"] = value[0][1]
-            document.getElementsByClassName('copyright')[0].style["color"] = value[2][1]
-            document.getElementsByClassName('footerHR')[0].style["border-color"] = value[3][1]
-            for (let x = 0; x < this.state.items.length; x++) {
-                document.getElementsByClassName('footerItems')[x].style["color"] = value[1][1]
-            }
-        }
-        this.setState({ [name]: value })
-    }
-
-    heightOfMain(footer) {
-
-        const hauteurTotal = window.innerHeight
-        const hauteurMain = hauteurTotal - footer
-        this.setState({
-            heightMain: hauteurMain
-        })
-
-    }
-
-
-    paddingFooter() {
-        if (document.getElementById('allColonne').offsetHeight) { // permet de savoir quand il a finit de load le footer
-            let padding = document.getElementById('footer').offsetHeight // hauteur du foooter
-            this.setState({
-                paddingfooter: padding
-            })
-            this.heightOfMain(padding)
-        } else {
-            setTimeout(() => this.paddingFooter(), 100)
-        }
-    }
-
     render() {
         const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} /> : null
         const items = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
         const color = (this.state.colorsStatus) ? <Couleur color={this.state.color} updateState={this.updateState} /> : null
-
-        /* TEST */
-
-        /*--------------*/
         return (
             <Fragment>
-
                 {edit}
                 <div className='main' style={{ minHeight: this.state.heightMain - 15, paddingBottom: this.state.paddingfooter + 15 }}>
 
@@ -133,7 +140,6 @@ export default class Template extends Component {
                             <li> <LinkCustomer link='/color/'>Copyright</LinkCustomer> </li>
                         </ul>
                         <div>
-                            {/* <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne}/> */}
                             {items}
                             {color}
                         </div>
