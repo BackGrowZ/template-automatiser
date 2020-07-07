@@ -14,21 +14,17 @@ export default class Template extends Component {
             editStatus: false, // acces a l'editeur
             itemsStatus: false, // tableau Items footer
             colorsStatus: false, // tableau couleurs footer
+            socialStatus: false, // tableau Reseau sociaux footer
             paddingfooter: null,
             heightMain: null,
 
             /* element necessaire au fonctionnement du footer */
             itemsByColonne: 2, // nombre d'item par colonne
             elementFooter: {},
-            facebook: [true, 'https://www.facebook.com/anthony.carreta/'],
-            github: [true, 'https://github.com/BackGrowZ/'],
-            instagram: [false, 'https://www.instagram.com/'],
-            linkedin: [true, 'https://www.linkedin.com/in/anthony-carreta/'],
-            pinterest: [false, 'https://www.pinterest.fr/'],
-            twitter: [false, 'https://twitter.com/?lang=fr/'],
             copyright: 'Name Of Site by Anthony Carreta', // message du copyright
             items: [['lien 1', '#link_1'], ['lien 2', '#link_2'], ['lien 3', '#link_3'], ['lien 4', '#link_4'], ['lien 5', '#link_5'], ['lien 6', '#link_6'], ['lien 7', '#link_7'], ['lien 8', '#link_8'], ['lien 9', '#link_9'], ['lien 10', '#link_10']], // listes des items avec les link
-            color: [['Background', '#A7C700'], ['Element', '#000000'], ['Copyright', '#000000'], ['Separateur', '#000000']]
+            color: [['Background', '#A7C700'], ['Element', '#000000'], ['Copyright', '#000000'], ['Separateur', '#000000']],
+            reseau: [['Facebook', true, 'https://www.facebook.com/anthony.carreta/'], ['GitHub', true, 'https://github.com/BackGrowZ/'], ['Instagram', false, 'https://www.instagram.com/'], ['Linkedin', true, 'https://www.linkedin.com/in/anthony-carreta/'], ['Pinterest', false, 'https://www.pinterest.fr/'], ['twitter', false, 'https://twitter.com/?lang=fr/']],
         }
         this.updateState = this.updateState.bind(this)
         this.addColonne = this.addColonne.bind(this)
@@ -125,6 +121,7 @@ export default class Template extends Component {
         const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} /> : null
         const items = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
         const color = (this.state.colorsStatus) ? <Couleur color={this.state.color} updateState={this.updateState} /> : null
+        const reseau = (this.state.socialStatus) ? <Couleur reseau={this.state.color} updateState={this.updateState} /> : null
         return (
             <Fragment>
                 {edit}
@@ -136,7 +133,7 @@ export default class Template extends Component {
                         <ul>
                             <li onClick={() => this.setState({ itemsStatus: !this.state.itemsStatus })}><LinkCustomer link='/items/'>Element et lien</LinkCustomer></li>
                             <li onClick={() => this.setState({ colorsStatus: !this.state.colorsStatus })}><LinkCustomer link='/color/'>Couleur</LinkCustomer></li>
-                            <li>Réseau sociaux</li>
+                            <li onClick={() => this.setState({ socialStatus: !this.state.socialStatus })}><LinkCustomer link='/reseau/'>Réseau sociaux</LinkCustomer></li>
                             <li> <LinkCustomer link='/color/'>Copyright</LinkCustomer> </li>
                         </ul>
                         <div>
@@ -150,18 +147,7 @@ export default class Template extends Component {
                         copyright={this.state.copyright}
                         itemsByColonne={this.state.itemsByColonne}
                         elementFooter={this.state.elementFooter}
-                        facebook={this.state.facebook}
-                        github={this.state.github}
-                        instagram={this.state.instagram}
-                        linkedin={this.state.linkedin}
-                        pinterest={this.state.pinterest}
-                        twitter={this.state.twitter}
-                        facebookLink={this.state.facebookLink}
-                        githubLink={this.state.githubLink}
-                        instagramLink={this.state.instagramLink}
-                        linkedinLink={this.state.linkedinLink}
-                        pinterestLink={this.state.pinterestLink}
-                        twitterLink={this.state.twitterLink}
+                        reseau={this.state.reseau}
                     />
                 </div>
             </Fragment>

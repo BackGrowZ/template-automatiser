@@ -3,19 +3,39 @@ import './footer.css'
 import { logoFB2, logoGithub1, logoInsta, logoLinkedin, LogoPinterest2, logoTwitter1 } from '../img'
 // import { logoFB1, logoFB2, logoFB3, logoGithub1, logoGithub2, logoInsta, logoLinkedin, LogoPinterest1, LogoPinterest2, LogoPinterest3, logoTwitter1, logoTwitter2, logoTwitter3 } from '../img'
 
-export default class Footer extends Component {
+/* ===== RESEAU ====
+    === STRUCTURE ===
+    1) Name
+    2) State
+    3) Link
 
+    === ORDER ===
+    0) Facebook
+    1) GitHub
+    2) Instagram
+    3) Linkedin
+    4) Pinterest
+    5) Twitter
+
+    === EXEMPLE ===
+    reseau[0][0] = Facebook
+    reseau[3][1] = true/false
+    reseau[5][2] = Link twitter
+*/
+
+export default class Footer extends Component {
     render() {
         const status = this.props
+        const reseau = this.props.reseau
         const elementFooter = Object.values(status.elementFooter) // le footer mise en forme
         const copyright = (status.copyright) ? <li className="copyright"><i>{status.copyright}</i></li> : null // affiche le copyright si il est pas null
 
-        const facebook = (status.facebook[0]) ? <a href={status.facebook[1]}><img className='logoSocial' src={logoFB2} alt='Logo Facebook' /></a> : null
-        const twitter = (status.twitter[0]) ? <a href={status.twitter[1]}><img className='logoSocial' src={logoTwitter1} alt='Logo Twitter' /></a> : null
-        const instagram = (status.instagram[0]) ? <a href={status.instagram[1]}><img className='logoSocial' src={logoInsta} alt='Logo Instagram' /></a> : null
-        const linkedin = (status.linkedin[0]) ? <a href={status.linkedin[1]}><img className='logoSocial' src={logoLinkedin} alt='Logo Linkedin' /></a> : null
-        const github = (status.github[0]) ? <a href={status.github[1]}><img className='logoSocial' src={logoGithub1} alt='Logo GitHub' /></a> : null
-        const pinterest = (status.pinterest[0]) ? <a href={status.pinterest[1]}><img className='logoSocial' src={LogoPinterest2} alt='Logo Pinterest' /></a> : null
+        const facebook  = (reseau[0][1]) ? <a href={reseau[0][2]}>  <img className='logoSocial' src={logoFB2}         alt='Logo Facebook' />    </a> : null
+        const github    = (reseau[1][1]) ? <a href={reseau[1][2]}>  <img className='logoSocial' src={logoGithub1}     alt='Logo GitHub' />      </a> : null
+        const instagram = (reseau[2][1]) ? <a href={reseau[2][2]}>  <img className='logoSocial' src={logoInsta}       alt='Logo Instagram' />   </a> : null
+        const linkedin  = (reseau[3][1]) ? <a href={reseau[3][2]}>  <img className='logoSocial' src={logoLinkedin}    alt='Logo Linkedin' />    </a> : null
+        const pinterest = (reseau[4][1]) ? <a href={reseau[4][2]}>  <img className='logoSocial' src={LogoPinterest2}  alt='Logo Pinterest' />   </a> : null
+        const twitter   = (reseau[5][1]) ? <a href={reseau[5][2]}>  <img className='logoSocial' src={logoTwitter1}    alt='Logo Twitter' />     </a> : null
 
         const social = <div className='contenantSocial'>{facebook}{twitter}{instagram}{linkedin}{github}{pinterest}</div>
 
@@ -32,7 +52,8 @@ export default class Footer extends Component {
 
         return (
             <Fragment>
-                <footer id='footer'>{footer}</footer>
-            </Fragment>)
+                <footer id='footer'> {footer} </footer>
+            </Fragment>
+        )
     }
 }
