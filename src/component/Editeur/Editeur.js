@@ -130,7 +130,7 @@ export default class Editeur extends Component {
         let label = this.state.copyright
         let link = this.state.copyrightLink
         let newCopyright = this.props.copyright
-        newCopyright= [label, link]
+        newCopyright = [label, link]
         this.props.updateState('copyright', newCopyright)
         this.noScroll(false)
     }
@@ -206,14 +206,30 @@ export default class Editeur extends Component {
                 </div>
             ) : null
 
+        const boxTemplate =
+            <div className='BoxEdition'>
+                <div className='HeaderBoxEdition'>
+                    <div className='CrossBoxEdition'><i onClick={() => this.noScroll(false)} className="fas fa-times" /></div>
+                    <div className='TitleBoxEdition'>TITlE OF BOX</div>
+                </div>
+                <div className='BodyBoxEdition'>
+                    Le contenu de ma box
+                </div>
+                <div className='FooterBoxEdition'>
+                    <button className='CancelBoxEdition'>Annuler</button>
+                    <button className='SubmitBoxEdition'>Validé</button>
+                    <button className='DeletBoxEdition'>Supprimer</button>
+                </div>
+
+            </div>
 
         const template =
             <div className='mainEdit'>
-                <button onClick={() => this.noScroll(false)} style={{ position: 'absolute', top: '0', right: '0', zoom: '1.5' }}><i style={{ color: 'red', cursor: 'pointer' }} onClick={() => this.noScroll(false)} className="fas fa-times" /></button>
                 {items}
                 {color}
                 {reseau}
                 {copyright}
+                {boxTemplate}
             </div>
 
         return template

@@ -3,6 +3,85 @@
     top: 0;
     height: 100%;
     width: 100%;
-    background-color: rgba(0, 0, 0, 0.7);
+    background-color: #000000b3;
     z-index: 1000;
 }
+
+.BoxEdition {
+    top: 20%;
+    left: 40%;
+    position: relative;
+    margin: 50px;
+    background-color: #fff;
+    max-width: 500px;
+}
+
+.HeaderBoxEdition {
+    border-bottom: #dee2e6 solid 1px;
+    width: 100%;
+}
+
+.CrossBoxEdition {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+}
+
+.TitleBoxEdition {
+    padding: 10px;
+    font-size: x-large;
+    font-weight: 500;
+    text-transform: uppercase;
+    text-align: center;
+}
+
+.BodyBoxEdition {
+    padding: 20px;
+    min-height: 200px;
+}
+
+.FooterBoxEdition {
+    border-top: #dee2e6 solid 1px;
+    padding: 20px;
+    text-align: right;
+}
+
+.SubmitBoxEdition, .CancelBoxEdition, .DeletBoxEdition {
+    font-size: 14px;
+    padding: 6px 12px;
+    margin: .25rem;
+    display: inline-block;
+    text-decoration: none;
+    text-align: center;
+    white-space: nowrap;
+    vertical-align: middle;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    background-image: none;
+    border: 1px solid transparent;
+    border-radius: 5px;
+    color: #fff;
+}
+
+.SubmitBoxEdition {
+    background-color: #28a745;
+}
+.CancelBoxEdition {
+    background-color: #6c757d;
+}
+
+.DeletBoxEdition {
+    background-color: #dc3545;
+}
+
+
+.fa-times {
+    color: #dc3545;
+    cursor: pointer
+}
+
