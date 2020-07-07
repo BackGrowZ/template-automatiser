@@ -19,6 +19,9 @@ export default class Editeur extends Component {
             pickerColor: '',
             /* Reseau */
             reseauLink: '',
+            /* Copyright */
+            copyright: '',
+            copyrightLink: '',
 
 
         }
@@ -58,6 +61,15 @@ export default class Editeur extends Component {
                     let reseau = this.props.reseau[this.state.id][2]
                     this.setState({
                         reseauLink: reseau
+                    })
+                    break;
+
+                case '/copyright/':
+                    let copyright = this.props.copyright[0]
+                    let copyrightLink = this.props.copyright[1]
+                    this.setState({
+                        copyrightLink: copyrightLink,
+                        copyright: copyright
                     })
                     break;
 
@@ -111,6 +123,15 @@ export default class Editeur extends Component {
         newItems.splice(id, 0, editedItems)
         this.props.updateState('items', newItems)
         setTimeout(() => this.props.addColonne(), 100)
+        this.noScroll(false)
+    }
+
+    updateCopyright() {
+        let label = this.state.copyright
+        let link = this.state.copyrightLink
+        let newCopyright = this.props.copyright
+        newCopyright= [label, link]
+        this.props.updateState('copyright', newCopyright)
         this.noScroll(false)
     }
 
@@ -176,12 +197,23 @@ export default class Editeur extends Component {
                 </div>
             ) : null
 
+        const copyright = (this.state.pathname === '/copyright/') ?
+            (
+                <div>
+                    <input id='copyright' onChange={this.handleInputChange} value={this.state.copyright} />
+                    <input id='copyrightLink' onChange={this.handleInputChange} value={this.state.copyrightLink} />
+                    <button onClick={() => this.updateCopyright()}>Validé</button>
+                </div>
+            ) : null
+
+
         const template =
             <div className='mainEdit'>
                 <button onClick={() => this.noScroll(false)} style={{ position: 'absolute', top: '0', right: '0', zoom: '1.5' }}><i style={{ color: 'red', cursor: 'pointer' }} onClick={() => this.noScroll(false)} className="fas fa-times" /></button>
                 {items}
                 {color}
                 {reseau}
+                {copyright}
             </div>
 
         return template
