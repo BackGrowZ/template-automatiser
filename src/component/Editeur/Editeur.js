@@ -78,7 +78,7 @@ export default class Editeur extends Component {
             hash: window.location.hash,
             id: window.location.hash.slice(4)
         })
-        
+
         setTimeout(() => this.init(), 100)
         setTimeout(() => this.initFunction(), 500)
     }
@@ -95,7 +95,7 @@ export default class Editeur extends Component {
                             ...formState,
                             itemsName: true,
                             itemsLink: true
-                        }, 
+                        },
                     })
                     setTimeout(() => this.setItems(), 100)
                     break;
@@ -183,42 +183,50 @@ export default class Editeur extends Component {
         }
     }
 
+    update() {
+        const { id } = this.state
+        let nameUpdate
+        let valueUpdate
+        const { form } = this.state
+        /*=== Items ===*/
+        const itemsName = form['itemsName']
+        const itemsLink = form['itemsLink']
+        const itemsEditer = [itemsName, itemsLink]
+        /*=== Copyright ===*/
+        const copyright = form['copyright']
+        const copyrightLink = form['copyrightLink']
+        const copyrightEditer = [copyright, copyrightLink]
+        /*=== Reseau Sociaux ===*/
+        const reseauLink = this.state.form['reseauLink']
+        let reseauEditer = this.props.reseau
+
+        /* === Config le updateState === */
+        if (this.state.pathname === '/items/') {
+            const itemsUpdate = this.props.items.filter(result =>
+                result !== this.props.items[id]
+            )
+            itemsUpdate.splice(id, 0, itemsEditer)
+            nameUpdate = 'items'
+            valueUpdate = itemsUpdate
+        } else if (this.state.pathname === '/copyright/') {
+            nameUpdate = 'copyright'
+            valueUpdate = copyrightEditer
+        } else if (this.state.pathname === '/reseau/') {
+            reseauEditer[id] = [reseauEditer[id][0], reseauEditer[id][1], reseauLink]
+            nameUpdate = 'reseau'
+            valueUpdate = reseauEditer
+        }
+
+        this.props.updateState(nameUpdate, valueUpdate)
+        setTimeout(() => this.props.addColonne(), 100)
+        this.noScroll(false)
+    }
+
     updateColor() {
         let id = this.state.id
         let newColor = this.props.color
         newColor[id][1] = this.state.pickerColor
         this.props.updateState('color', newColor)
-        this.noScroll(false)
-    }
-
-    updateItems() {
-        let name = this.state.itemsName
-        let link = this.state.itemsLink
-        let id = parseInt(this.state.id, 10)
-        let editedItems = [name, link]
-        const newItems = this.props.items.filter(result =>
-            result !== this.props.items[this.state.hash.slice(4)]
-        )
-        newItems.splice(id, 0, editedItems)
-        this.props.updateState('items', newItems)
-        setTimeout(() => this.props.addColonne(), 100)
-        this.noScroll(false)
-    }
-
-    updateCopyright() {
-        let label = this.state.copyright
-        let link = this.state.copyrightLink
-        let newCopyright = this.props.copyright
-        newCopyright = [label, link]
-        this.props.updateState('copyright', newCopyright)
-        this.noScroll(false)
-    }
-
-    updateNetwork() {
-        let id = parseInt(this.state.id, 10)
-        let newReseau = this.props.reseau
-        newReseau[id] = [newReseau[id][0], newReseau[id][1], this.state.reseauLink]
-        this.props.updateState('reseau', newReseau)
         this.noScroll(false)
     }
 
@@ -246,8 +254,10 @@ export default class Editeur extends Component {
         let boxButtonFooterState = state.boxButtonFooter
         /* Function */
         const noScroll = () => this.noScroll(noScrollState)
+        const update = () => this.update()
 
         boxButtonFooterState[0][3] = noScroll // button annuler
+        boxButtonFooterState[1][3] = update // button Valider
         this.setState({
             boxButtonFooter: boxButtonFooterState,
         })
@@ -286,7 +296,7 @@ export default class Editeur extends Component {
                     <select value={this.state.itemsActualPosition} id='id' onChange={this.handleInputChange}>
                         {positionSelect}
                     </select>
-                    <button onClick={() => this.updateItems()}>Validé</button>
+                    {/* <button onClick={() => this.updateItems()}>Validé</button> */}
                 </div>
             ) : null
 
