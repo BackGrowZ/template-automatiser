@@ -31,6 +31,7 @@ export default class Editeur extends Component {
             copyrightLink: '',
 
             /* BoxSetting */
+            titleBox: '',
             boxButtonFooter: [
                 ['Annuler', true, 'CancelBoxEdition', undefined], // label, afficher, ClassName, function(initialiser dans initFunction)
                 ['Valider', true, 'SubmitBoxEdition', undefined],
@@ -72,6 +73,7 @@ export default class Editeur extends Component {
         if (this.state.hash !== null) {
             const { formInput } = this.state
             const { formSelect } = this.state
+            const { id } = this.state
             let formInputEdited = formInput
             let formSelectEdited = formSelect
             switch (this.state.pathname) {
@@ -80,6 +82,7 @@ export default class Editeur extends Component {
                     formInputEdited[1][2] = true
                     formSelectEdited[0][3] = true
                     this.setState({
+                        titleBox: 'Lien Footer',
                         itemsActualPosition: `${this.state.hash.slice(4)} (actuelle)`,
                         formInput: formInputEdited
                     })
@@ -94,7 +97,7 @@ export default class Editeur extends Component {
                     formInputEdited[2][1] = this.props.reseau[this.state.id][2]
                     formInputEdited[2][2] = true
 
-                    this.setState({ formInput: formInputEdited })
+                    this.setState({ titleBox: this.props.reseau[id][0], formInput: formInputEdited })
                     break;
 
                 case '/copyright/':
@@ -103,7 +106,7 @@ export default class Editeur extends Component {
                     formInputEdited[3][2] = true
                     formInputEdited[4][2] = true
 
-                    this.setState({ form: formInputEdited })
+                    this.setState({ form: formInputEdited, titleBox: 'Copyright' })
                     break;
 
                 default:
@@ -121,7 +124,6 @@ export default class Editeur extends Component {
             let formInputEdited = formInput
             let formSelectEdited = formSelect
             formSelectEdited[0][2] = id
-            console.log(formSelectEdited[0][2]);
 
             formInputEdited[0][1] = this.props.items[id][0]
             formInputEdited[1][1] = this.props.items[id][1]
@@ -222,8 +224,6 @@ export default class Editeur extends Component {
         let all = formSelect
         all[id] = Edited
 
-        // console.log(all[id]);
-
         this.setState({
             formSelect: all
         })
@@ -264,24 +264,6 @@ export default class Editeur extends Component {
                 </div>
             ) : null
 
-        const reseau = (this.state.pathname === '/reseau/') ?
-            (
-                <div>
-                    <h3 style={{ color: 'white' }}>{this.props.reseau[this.state.id][0]}</h3>
-                    <input id='reseauLink' onChange={this.handleInputChange} value={this.state.reseauLink} />
-                    <button onClick={() => this.updateNetwork()}>Validé</button>
-                </div>
-            ) : null
-
-        const copyright = (this.state.pathname === '/copyright/') ?
-            (
-                <div>
-                    <input id='copyright' onChange={this.handleInputChange} value={this.state.copyright} />
-                    <input id='copyrightLink' onChange={this.handleInputChange} value={this.state.copyrightLink} />
-                    <button onClick={() => this.updateCopyright()}>Validé</button>
-                </div>
-            ) : null
-
         const boxButtonFooter = this.boxButton(this.state.boxButtonFooter)
 
         const formInput = this.state.formInput.map((value, key) => (value[2]) ?
@@ -319,7 +301,7 @@ export default class Editeur extends Component {
             <div className='BoxEdition'>
                 <div className='HeaderBoxEdition'>
                     <div className='CrossBoxEdition'><i onClick={this.state.boxButtonFooter[0][3]} className="fas fa-times" /></div>
-                    <div className='TitleBoxEdition'>TITlE OF BOX</div>
+                    <div className='TitleBoxEdition'>{this.state.titleBox}</div>
                 </div>
                 <div className='BodyBoxEdition'>
                     {formInput}
@@ -333,8 +315,6 @@ export default class Editeur extends Component {
         const template =
             <div className='mainEdit'>
                 {color}
-                {reseau}
-                {copyright}
                 {boxTemplate}
             </div>
 
