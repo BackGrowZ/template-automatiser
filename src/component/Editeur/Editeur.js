@@ -36,40 +36,25 @@ export default class Editeur extends Component {
                 ['Valider', true, 'SubmitBoxEdition', undefined],
                 ['Supprimer', true, 'DeletBoxEdition', undefined]
             ],
-            formState: {
-                itemsName: false,
-                itemsLink: false,
-                reseauLink: false,
-                copyright: false,
-                copyrightLink: false
-            },
-            form: {
-                itemsName: '',
-                itemsLink: '',
-                reseauLink: '',
-                copyright: '',
-                copyrightLink: '',
-            },
-            label: {
-                itemsName: 'Label',
-                itemsLink: 'URL',
-                reseauLink: 'URL',
-                copyright: 'Label',
-                copyrightLink: 'URL',
-            },
-            boxInput: [
-                [true, null, 'boxForm', '', 'itemsName', 'Nom'], // afficher, placeholder, ClassName, value, name, label
-                [true, null, 'boxForm', '', 'itemsLink', 'Lien'],
-                [true, null, 'boxForm', '', 'reseauLink', 'Lien'],
-                [true, null, 'boxForm', '', 'copyright', 'Nom'],
-                [true, null, 'boxForm', '', 'copyrightLink', 'Lien'],
-            ]
-
+            color: [],
+            formSelect: [ // label, select, value, state
+                // ['Position', ['0', '1', '2', '3', '4', '5'], true],
+                ['Position', [], '', false], // position items
+                ['test', ['Moi', 'lui', 'elle'], 'lui', false], // simple test 
+            ],
+            formInput: [// label, value Input, state
+                ['Label', '', false], // itemsName
+                ['URL', '', false], // itemsLink
+                ['URL', '', false], // reseauLink
+                ['label', '', false], // copyright
+                ['URL', '', false], // copyrightLink
+            ],
         }
         this.setItems = this.setItems.bind(this)
         this.init = this.init.bind(this)
         this.componentDidMount = this.componentDidMount.bind(this)
         this.onFormInputChange = this.onFormInputChange.bind(this)
+        this.onFormSelectChange = this.onFormSelectChange.bind(this)
     }
     componentDidMount() {
         window.addEventListener('scroll', this.noScroll(!this.state.noscroll));
@@ -85,64 +70,40 @@ export default class Editeur extends Component {
 
     init() {
         if (this.state.hash !== null) {
-            const { form } = this.state
-            const { formState } = this.state
+            const { formInput } = this.state
+            const { formSelect } = this.state
+            let formInputEdited = formInput
+            let formSelectEdited = formSelect
             switch (this.state.pathname) {
                 case '/items/':
+                    formInputEdited[0][2] = true
+                    formInputEdited[1][2] = true
+                    formSelectEdited[0][3] = true
                     this.setState({
                         itemsActualPosition: `${this.state.hash.slice(4)} (actuelle)`,
-                        formState: {
-                            ...formState,
-                            itemsName: true,
-                            itemsLink: true
-                        },
+                        formInput: formInputEdited
                     })
                     setTimeout(() => this.setItems(), 100)
                     break;
 
                 case '/color/':
-                    let color = this.props.color[this.state.id][1]
-                    this.setState({
-                        pickerColor: color,
-                        // formState: [false, false, false, false, false], // itemsName, itemsLink,reseauLink,copyright,copyrightLink
-                    })
+                    this.setState({ pickerColor: this.props.color[this.state.id][1] })
                     break;
 
                 case '/reseau/':
-                    let reseau = this.props.reseau[this.state.id][2]
-                    this.setState({
-                        form: {
-                            ...form,
-                            reseauLink: reseau
-                        },
-                        formState: {
-                            ...formState,
-                            reseauLink: true,
-                        },
-                        reseauLink: reseau,
-                        // formState: [false, false, true, false, false], // itemsName, itemsLink,reseauLink,copyright,copyrightLink
-                    })
+                    formInputEdited[2][1] = this.props.reseau[this.state.id][2]
+                    formInputEdited[2][2] = true
+
+                    this.setState({ formInput: formInputEdited })
                     break;
 
                 case '/copyright/':
-                    let copyright = this.props.copyright[0]
-                    let copyrightLink = this.props.copyright[1]
+                    formInputEdited[3][1] = this.props.copyright[0]
+                    formInputEdited[4][1] = this.props.copyright[1]
+                    formInputEdited[3][2] = true
+                    formInputEdited[4][2] = true
 
-                    this.setState({
-                        form: {
-                            ...form,
-                            copyright: copyright,
-                            copyrightLink: copyrightLink
-                        },
-                        formState: {
-                            ...formState,
-                            copyright: true,
-                            copyrightLink: true
-                        },
-                        // formState: [false, false, false, true, true], // itemsName, itemsLink,reseauLink,copyright,copyrightLink
-                        copyrightLink: copyrightLink,
-                        copyright: copyright
-                    })
+                    this.setState({ form: formInputEdited })
                     break;
 
                 default:
@@ -153,31 +114,28 @@ export default class Editeur extends Component {
     }
 
     setItems() {
-        const { form } = this.state
         if (this.state.id) {
-            let id = this.state.id
-            const name = this.props.items[id][0]
-            const link = this.props.items[id][1]
-            let position = []
-            for (let x = 0; x < this.props.items.length; x++) {
-                if (x === parseInt(id, 10)) {
-                    position[x] = `${x} (actuelle)`
-                } else {
-                    position[x] = `${x}`
-                }
-            }
-            this.setState({
-                form: {
-                    ...form,
-                    itemsName: name,
-                    itemsLink: link,
-                },
+            const { id } = this.state
+            const { formInput } = this.state
+            const { formSelect } = this.state
+            let formInputEdited = formInput
+            let formSelectEdited = formSelect
+            formSelectEdited[0][2] = id
+            console.log(formSelectEdited[0][2]);
 
-                itemsName: name,
-                itemsLink: link,
-                itemsPosition: position,
+            formInputEdited[0][1] = this.props.items[id][0]
+            formInputEdited[1][1] = this.props.items[id][1]
+
+            for (let x = 0; x < this.props.items.length; x++) {
+                formSelectEdited[0][1][x] = `${x}`
+            }
+
+            this.setState({
+                formInput: formInputEdited,
+                formSelect: formSelectEdited,
                 itemsActualPosition: `${id} (actuelle)`
             })
+
         } else {
             setTimeout(() => this.setItems(), 100)
         }
@@ -187,17 +145,19 @@ export default class Editeur extends Component {
         const { id } = this.state
         let nameUpdate
         let valueUpdate
-        const { form } = this.state
+        const { formInput } = this.state
+        const { formSelect } = this.state
         /*=== Items ===*/
-        const itemsName = form['itemsName']
-        const itemsLink = form['itemsLink']
+        const itemsName = formInput[0][1]
+        const itemsLink = formInput[1][1]
+        const itemsPosition = formSelect[0][2]
         const itemsEditer = [itemsName, itemsLink]
         /*=== Copyright ===*/
-        const copyright = form['copyright']
-        const copyrightLink = form['copyrightLink']
+        const copyright = formInput[3][1]
+        const copyrightLink = formInput[4][1]
         const copyrightEditer = [copyright, copyrightLink]
         /*=== Reseau Sociaux ===*/
-        const reseauLink = this.state.form['reseauLink']
+        const reseauLink = this.state.formInput[2][1]
         let reseauEditer = this.props.reseau
 
         /* === Config le updateState === */
@@ -205,7 +165,7 @@ export default class Editeur extends Component {
             const itemsUpdate = this.props.items.filter(result =>
                 result !== this.props.items[id]
             )
-            itemsUpdate.splice(id, 0, itemsEditer)
+            itemsUpdate.splice(itemsPosition, 0, itemsEditer)
             nameUpdate = 'items'
             valueUpdate = itemsUpdate
         } else if (this.state.pathname === '/copyright/') {
@@ -239,12 +199,33 @@ export default class Editeur extends Component {
         }
     }
     onFormInputChange({ target }) {
-        let { form } = this.state
+        const id = target.name
+        const { formInput } = this.state
+        let label = formInput[id][0]
+        let value = target.value
+        let state = formInput[id][2]
+        const Edited = [label, value, state]
+        const all = formInput
+        all[id] = Edited
         this.setState({
-            form: {
-                ...form,
-                [target.name]: target.value
-            }
+            formInput: all
+        })
+    }
+    onFormSelectChange({ target }) {
+        const { formSelect } = this.state
+        const id = target.name
+        let label = formSelect[id][0]
+        let select = formSelect[id][1]
+        let value = target.value
+        let state = formSelect[id][3]
+        const Edited = [label, select, value, state]
+        let all = formSelect
+        all[id] = Edited
+
+        // console.log(all[id]);
+
+        this.setState({
+            formSelect: all
         })
     }
     initFunction() { // place les fonctions dans le state
@@ -274,29 +255,12 @@ export default class Editeur extends Component {
     }
     render() {
         const handleColorChange = ({ hex }) => this.setState({ pickerColor: hex })
-        let positionSelect = this.state.itemsPosition.map(position =>
-            (position === `${this.state.id} (actuelle)`) ?
-
-                <option key={position} value={position}>{position}</option>
-                :
-                <option key={position} value={position}>{position}</option>
-        )
 
         const color = (this.state.pathname === '/color/') ?
             (
                 <div>
                     <ChromePicker color={this.state.pickerColor} onChangeComplete={handleColorChange} />
                     <button onClick={() => this.updateColor()}>Validé</button>
-                </div>
-            ) : null
-
-        const items = (this.state.pathname === '/items/' && this.state.itemsActualPosition && this.state.boxInput[0][4]) ?
-            (
-                <div>
-                    <select value={this.state.itemsActualPosition} id='id' onChange={this.handleInputChange}>
-                        {positionSelect}
-                    </select>
-                    {/* <button onClick={() => this.updateItems()}>Validé</button> */}
                 </div>
             ) : null
 
@@ -317,32 +281,40 @@ export default class Editeur extends Component {
                     <button onClick={() => this.updateCopyright()}>Validé</button>
                 </div>
             ) : null
+
         const boxButtonFooter = this.boxButton(this.state.boxButtonFooter)
 
-        let input = Object.entries(this.state.form).map(([key, value]) => {
-            return (
-                <input
-                    key={`input${key}`}
-                    name={key}
-                    placeholder={key}
-                    value={value}
-                    className='boxForm'
-                    onChange={this.onFormInputChange}
-                />
-            );
-        })
-        let label = Object.entries(this.state.label).map(([key, value]) => {
-            return (
-                <label
-                    key={`label${key}`}
-                    htmlFor={key}
-                    className='boxLabelInput'
-                >
-                    {value}
-                </label>
-            );
-        })
-        const formStateArray = Object.entries(this.state.formState)
+        const formInput = this.state.formInput.map((value, key) => (value[2]) ?
+            <div key={key} className='boxContainerInput'>
+                <label key={`label${key}`} htmlFor={key} className='boxLabelInput' > {value[0]} </label>
+                <input key={`input${key}`} name={key} value={value[1]} className='boxForm' onChange={this.onFormInputChange} />
+            </div>
+            : null
+        )
+
+        const formSelect = this.state.formSelect.map((value, index) => (this.state.id && value[3]) ?
+            <div key={index} className='boxContainerInput'>
+                <label key={`label${index}`} className='boxLabelInput' > {value[0]} </label>
+                <select key={index} name={index} value={value[2]} className='boxForm' id='id' onChange={this.onFormSelectChange}>
+                    {
+                        (index === 0) ? // pour que la position commence a 1 
+                            this.state.formSelect[index][1].map((valueOption, key2) => (value[2] === valueOption) ?
+                                <option key={key2} value={valueOption}>{parseInt(valueOption, 10) + 1} (actuelle)</option>
+                                :
+                                <option key={key2} value={valueOption}>{parseInt(valueOption, 10) + 1}</option>
+                            )
+                            :
+                            this.state.formSelect[index][1].map((valueOption, key2) => (this.state.id === valueOption) ?
+                                <option key={key2} value={valueOption}>{valueOption} (actuelle)</option>
+                                :
+                                <option key={key2} value={valueOption}>{valueOption}</option>
+                            )
+                    }
+                </select>
+            </div>
+            : null
+        )
+
         const boxTemplate =
             <div className='BoxEdition'>
                 <div className='HeaderBoxEdition'>
@@ -350,23 +322,16 @@ export default class Editeur extends Component {
                     <div className='TitleBoxEdition'>TITlE OF BOX</div>
                 </div>
                 <div className='BodyBoxEdition'>
-                    {input.map((reslut, key) => (formStateArray[key][1]) ?
-                        <div key={key} className='boxContainerInput'>
-                            {label[key]}
-                            {reslut}
-                        </div>
-                        : null
-                    )}
+                    {formInput}
+                    {formSelect}
                 </div>
                 <div className='FooterBoxEdition'>
                     {boxButtonFooter}
                 </div>
-
             </div>
 
         const template =
             <div className='mainEdit'>
-                {items}
                 {color}
                 {reseau}
                 {copyright}
