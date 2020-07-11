@@ -32,7 +32,7 @@ export default class Footer extends Component {
         const copyright = (status.copyright) ?
             <li className="copyright">
                 <i>
-                    <a className='copyrightLink' target="_blank" rel="noopener noreferrer" href={status.copyright[1]}>
+                    <a className='copyrightLink' target="_blank" rel="noopener noreferrer" style={{color:this.props.color[2][1]}} href={status.copyright[1]}>
                         {status.copyright[0]}
                     </a>
                 </i>
@@ -71,11 +71,11 @@ export default class Footer extends Component {
         const social = <div className='contenantSocial'>{facebook}{twitter}{instagram}{linkedin}{github}{pinterest}</div>
 
         const footer =
-            <div className='footer'>
+            <div className='footer' style={{backgroundColor:this.props.color[0][1]}}>
                 <div className="allColonne" id='allColonne'>
                     {elementFooter}
                 </div>
-                <hr className='footerHR' />
+                <hr className='footerHR' style={{borderColor:this.props.color[3][1]}} />
                 {social}
                 {copyright}
             </div>
@@ -83,7 +83,7 @@ export default class Footer extends Component {
 
         return (
             <Fragment>
-                <footer id='footer'> {footer} </footer>
+                <footer id='footer' hidden={this.props.hidden}> {footer} </footer>
             </Fragment>
         )
     }

@@ -21,6 +21,8 @@ export default class Editeur extends Component {
             itemsPosition: [],
 
             /* Couleur */
+            pickerState: false,
+            labelColor: '',
             pickerColor: '',
 
             /* Reseau */
@@ -56,6 +58,7 @@ export default class Editeur extends Component {
         this.componentDidMount = this.componentDidMount.bind(this)
         this.onFormInputChange = this.onFormInputChange.bind(this)
         this.onFormSelectChange = this.onFormSelectChange.bind(this)
+        this.updateColor = this.updateColor.bind(this)
     }
     componentDidMount() {
         window.addEventListener('scroll', this.noScroll(!this.state.noscroll));
@@ -84,7 +87,9 @@ export default class Editeur extends Component {
                     this.setState({
                         titleBox: 'Lien Footer',
                         itemsActualPosition: `${this.state.hash.slice(4)} (actuelle)`,
-                        formInput: formInputEdited
+                        formInput: formInputEdited,
+                        pickerColor: this.props.color[1][1],
+                        labelColor: 'Couleur texte'
                     })
                     setTimeout(() => this.setItems(), 100)
                     break;
@@ -106,7 +111,12 @@ export default class Editeur extends Component {
                     formInputEdited[3][2] = true
                     formInputEdited[4][2] = true
 
-                    this.setState({ form: formInputEdited, titleBox: 'Copyright' })
+                    this.setState({ 
+                        form: formInputEdited, 
+                        titleBox: 'Copyright',
+                        pickerColor: this.props.color[2][1],
+                        labelColor: 'Couleur texte'
+                     })
                     break;
 
                 default:
@@ -184,12 +194,17 @@ export default class Editeur extends Component {
         this.noScroll(false)
     }
 
-    updateColor() {
-        let id = this.state.id
+    updateColor(hex) {
+        this.setState({ pickerColor: hex })
         let newColor = this.props.color
+        let id
+        if (this.state.pathname === '/items/') {
+            id = 1
+        } else if (this.state.pathname === '/copyright/') {
+            id = 2
+        }
         newColor[id][1] = this.state.pickerColor
         this.props.updateState('color', newColor)
-        this.noScroll(false)
     }
 
     noScroll(state) {
@@ -254,13 +269,17 @@ export default class Editeur extends Component {
         return button
     }
     render() {
-        const handleColorChange = ({ hex }) => this.setState({ pickerColor: hex })
+        const handleColorChange = ({ hex }) => this.updateColor(hex)
+        // const handleColorChange = ({ hex }) => console.log(this.props.color);
 
-        const color = (this.state.pathname === '/color/') ?
+        // this.props.updateState('color', hex)
+
+        const color = (this.state.pickerState) ?
             (
                 <div>
                     <ChromePicker color={this.state.pickerColor} onChangeComplete={handleColorChange} />
-                    <button onClick={() => this.updateColor()}>Validé</button>
+                    {/* <ChromePicker color={this.props.color[this.state.id][1]} onChangeComplete={handleColorChange} /> */}
+                    <button onClick={() => this.setState({ pickerState: false })}>Valider</button>
                 </div>
             ) : null
 
@@ -297,6 +316,14 @@ export default class Editeur extends Component {
             : null
         )
 
+        const colorInBox = (this.state.pickerColor) ?
+            <div className='boxContainerInput'>
+                <label className='boxLabelInput'>{this.state.labelColor}</label>
+                <div style={{ display: 'inline-block', height: '20px', width: '20px', background: `${this.state.pickerColor}` }} onClick={() => this.setState({ pickerState: true })}></div>
+                <span style={{ marginLeft: '.5rem', fontSize: '22px', textTransform: 'uppercase' }} onClick={() => this.setState({ pickerState: true })}>{this.state.pickerColor}</span>
+            </div>
+            : null
+
         const boxTemplate =
             <div className='BoxEdition'>
                 <div className='HeaderBoxEdition'>
@@ -306,6 +333,9 @@ export default class Editeur extends Component {
                 <div className='BodyBoxEdition'>
                     {formInput}
                     {formSelect}
+                    {colorInBox}
+                    {color}
+
                 </div>
                 <div className='FooterBoxEdition'>
                     {boxButtonFooter}
@@ -314,7 +344,6 @@ export default class Editeur extends Component {
 
         const template =
             <div className='mainEdit'>
-                {color}
                 {boxTemplate}
             </div>
 

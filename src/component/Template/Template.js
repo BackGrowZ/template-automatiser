@@ -20,6 +20,8 @@ export default class Template extends Component {
             paddingfooter: null,
             heightMain: null,
 
+            hiddenFooter: true,
+            menu: [false, '-300px',],
             /* element necessaire au fonctionnement du footer */
             itemsByColonne: 2, // nombre d'item par colonne
             elementFooter: {},
@@ -55,7 +57,7 @@ export default class Template extends Component {
     }
 
     paddingFooter() { // config au rendu
-        if (document.getElementById('allColonne').offsetHeight) { // permet de savoir quand il a finit de load le footer
+        if (document.getElementById('allColonne')) { // permet de savoir quand il a finit de load le footer
             let padding = document.getElementById('footer').offsetHeight // hauteur du foooter
             this.setState({
                 paddingfooter: padding
@@ -102,7 +104,7 @@ export default class Template extends Component {
                             this.state.items.slice(count, count + this.state.itemsByColonne) // extrait les element a placer dans le footer
                                 .map(result =>
                                     <a className='itemLink' href={result[1]} key={uuidv4()}>
-                                        <li className='footerItems' key={uuidv4()}>{result[0]}</li>
+                                        <li className='footerItems' key={uuidv4()} style={{ color: this.state.color[1][1] }}>{result[0]}</li>
                                     </a>
                                 ) // creer le(s) li par rapport au élément avec le lien
                         }
@@ -120,7 +122,15 @@ export default class Template extends Component {
     }
 
     render() {
-        const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} reseau={this.state.reseau} copyright={this.state.copyright}/> : null
+        const { menu } = this.state
+        const menuState = () => (menu[0]) ? this.setState({ menu: [false, '-300px'] }) : this.setState({ menu: [true, '0'] })
+        const menuEdit =
+            <div className='MenuElement' style={{ left: menu[1] }}>
+                <div className='buttonShowMenu' onClick={menuState}>
+                    {(menu[0]) ? <i style={{ color: '#fff', zoom: '2', paddingTop: '40%' }} className="fas fa-angle-left" /> : <i style={{ color: '#fff', zoom: '2', paddingTop: '40%' }} className="fas fa-angle-right" />}
+                </div>
+            </div>
+        const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} reseau={this.state.reseau} copyright={this.state.copyright} /> : null
         const items = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
         const color = (this.state.colorsStatus) ? <Couleur color={this.state.color} updateState={this.updateState} /> : null
         const reseau = (this.state.socialStatus) ? <Network reseau={this.state.reseau} updateState={this.updateState} /> : null
@@ -128,6 +138,7 @@ export default class Template extends Component {
             <Fragment>
                 {edit}
                 <div className='main' style={{ minHeight: this.state.heightMain - 15, paddingBottom: this.state.paddingfooter + 15 }}>
+                    {menuEdit}
 
                     <div>
                         <h1>Footer</h1>
@@ -137,6 +148,7 @@ export default class Template extends Component {
                             <li onClick={() => this.setState({ colorsStatus: !this.state.colorsStatus })}><LinkCustomer link='/color/'>Couleur</LinkCustomer></li>
                             <li onClick={() => this.setState({ socialStatus: !this.state.socialStatus })}><LinkCustomer link='/reseau/'>Réseau sociaux</LinkCustomer></li>
                             <li onClick={() => this.setState({ editStatus: !this.state.editStatus })}><LinkCustomer link='/copyright/#id=0'>Copyright</LinkCustomer> </li>
+                            <li onClick={() => this.setState({ hiddenFooter: !this.state.hiddenFooter })}>Footer</li>
                         </ul>
                         <div>
                             {items}
@@ -146,6 +158,8 @@ export default class Template extends Component {
 
                     </div>
                     <Footer
+                        hidden={this.state.hiddenFooter}
+                        color={this.state.color}
                         items={this.state.items}
                         copyright={this.state.copyright}
                         itemsByColonne={this.state.itemsByColonne}

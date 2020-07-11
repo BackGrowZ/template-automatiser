@@ -1,4 +1,4 @@
-.main{
+.main {
     margin-top: -21px;
     position: relative;
 }
@@ -13,4 +13,24 @@ table {
 th {
     min-width: 50px;
     padding: 0 5px;
+}
+
+.buttonShowMenu {
+    background-color: teal;
+    height: 75px;
+    width: 50px;
+    position: absolute;
+    top:5px;
+    right: -50px;
+    border-radius: 0 10px 10px 0;
+    text-align: center;
+    cursor: pointer;
+    transition: right .3s;
+}
+
+.MenuElement{
+    position: fixed;
+    height: 100%;
+    width: 300px;
+    background-color: teal;
 }
