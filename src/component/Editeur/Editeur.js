@@ -67,7 +67,6 @@ export default class Editeur extends Component {
             hash: window.location.hash,
             id: window.location.hash.slice(4)
         })
-
         setTimeout(() => this.init(), 100)
         setTimeout(() => this.initFunction(), 500)
     }
@@ -111,12 +110,12 @@ export default class Editeur extends Component {
                     formInputEdited[3][2] = true
                     formInputEdited[4][2] = true
 
-                    this.setState({ 
-                        form: formInputEdited, 
+                    this.setState({
+                        form: formInputEdited,
                         titleBox: 'Copyright',
                         pickerColor: this.props.color[2][1],
                         labelColor: 'Couleur texte'
-                     })
+                    })
                     break;
 
                 default:

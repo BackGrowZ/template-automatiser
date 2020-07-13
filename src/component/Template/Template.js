@@ -7,6 +7,8 @@ import Items from '../Items/Items';
 import Couleur from '../Couleur/Couleur';
 import LinkCustomer from '../LinkCustomer/LinkCustomer';
 import Network from '../Network/Network';
+import SliderButton from '../SliderButton/SliderButton';
+
 
 export default class Template extends Component {
     constructor(props) {
@@ -20,8 +22,10 @@ export default class Template extends Component {
             paddingfooter: null,
             heightMain: null,
 
-            hiddenFooter: true,
-            menu: [false, '-300px',],
+            showFooter: false,
+            // menu: [false, '-340px',],
+            menu: [true, '0',],
+            hiddencomponent: false,
             /* element necessaire au fonctionnement du footer */
             itemsByColonne: 2, // nombre d'item par colonne
             elementFooter: {},
@@ -46,13 +50,12 @@ export default class Template extends Component {
         if (this.state.heightMain) {
             let paddingFooter = document.getElementById('footer').offsetHeight // hauteur du foooter
             let hauteurMain = window.innerHeight - paddingFooter
-            console.log('resized to: ', window.innerWidth, 'x', window.innerHeight)
             if (this.state.heightMain !== hauteurMain) {
                 this.setState({
                     paddingfooter: paddingFooter,
                     heightMain: hauteurMain
                 })
-            } else console.log('=> resized to: ', window.innerWidth, 'x', window.innerHeight)
+            }
         } else setTimeout(() => this.handleResize(), 100)
     }
 
@@ -123,13 +126,23 @@ export default class Template extends Component {
 
     render() {
         const { menu } = this.state
-        const menuState = () => (menu[0]) ? this.setState({ menu: [false, '-300px'] }) : this.setState({ menu: [true, '0'] })
+        const { hiddencomponent } = this.state
+        const switchHandle = (name, value) =>
+            (
+                this.setState({ [name]: value })
+            )
+        const menuState = () => (menu[0]) ? this.setState({ menu: [false, '-340px'] }) : this.setState({ menu: [true, '0'] })
         const menuEdit =
             <div className='MenuElement' style={{ left: menu[1] }}>
                 <div className='buttonShowMenu' onClick={menuState}>
                     {(menu[0]) ? <i style={{ color: '#fff', zoom: '2', paddingTop: '40%' }} className="fas fa-angle-left" /> : <i style={{ color: '#fff', zoom: '2', paddingTop: '40%' }} className="fas fa-angle-right" />}
                 </div>
+                <h2>Component {(hiddencomponent) ? <i style={{ color: '#fff', cursor: 'pointer' }} onClick={() => this.setState({ hiddencomponent: !hiddencomponent })} className="fas fa-angle-down" /> : <i onClick={() => this.setState({ hiddencomponent: !hiddencomponent })} style={{ color: '#fff', cursor: 'pointer' }} className="fas fa-angle-up" />}</h2>
+                <div className='TitleComponent' hidden={hiddencomponent}>
+                    <span>Footer</span> <SliderButton etat={this.state.showFooter} name='showFooter' function={switchHandle} />
+                </div>
             </div>
+
         const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} reseau={this.state.reseau} copyright={this.state.copyright} /> : null
         const items = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
         const color = (this.state.colorsStatus) ? <Couleur color={this.state.color} updateState={this.updateState} /> : null
@@ -158,7 +171,7 @@ export default class Template extends Component {
 
                     </div>
                     <Footer
-                        hidden={this.state.hiddenFooter}
+                        show={this.state.showFooter}
                         color={this.state.color}
                         items={this.state.items}
                         copyright={this.state.copyright}

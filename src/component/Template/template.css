@@ -16,11 +16,11 @@ th {
 }
 
 .buttonShowMenu {
-    background-color: teal;
+    background-color: #6d6d6d;
     height: 75px;
     width: 50px;
     position: absolute;
-    top:5px;
+    top: 5px;
     right: -50px;
     border-radius: 0 10px 10px 0;
     text-align: center;
@@ -28,9 +28,16 @@ th {
     transition: right .3s;
 }
 
-.MenuElement{
+.MenuElement {
     position: fixed;
     height: 100%;
     width: 300px;
-    background-color: teal;
+    background-color: #6d6d6d;
+    padding: 20px;
+    text-align: center;
+}
+
+.TitleComponent {
+    font-size: x-large;
+    border-radius: 5px;
 }
