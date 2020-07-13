@@ -25,15 +25,14 @@ import { logoFB2, logoGithub1, logoInsta, logoLinkedin, LogoPinterest2, logoTwit
 
 export default class Footer extends Component {
     render() {
-        const status = this.props
-        const reseau = this.props.reseau
-        const elementFooter = Object.values(status.elementFooter) // le footer mise en forme
+        const { reseau, copyright, show, color, elementFooter } = this.props
+        const elementFooterEnForme = Object.values(elementFooter) // le footer mise en forme
 
-        const copyright = (status.copyright) ?
+        const copyrightDiv = (copyright) ?
             <li className="copyright">
                 <i>
-                    <a className='copyrightLink' target="_blank" rel="noopener noreferrer" style={{ color: this.props.color[2][1] }} href={status.copyright[1]}>
-                        {status.copyright[0]}
+                    <a className='copyrightLink' target="_blank" rel="noopener noreferrer" style={{ color: color[2][1] }} href={copyright[1]}>
+                        {copyright[0]}
                     </a>
                 </i>
             </li> : null // affiche le copyright si il est pas null
@@ -70,26 +69,26 @@ export default class Footer extends Component {
 
         const social = <div className='contenantSocial'>{facebook}{twitter}{instagram}{linkedin}{github}{pinterest}</div>
 
-        const footer = (this.props.show) ?
+        const footer = (show) ?
             <footer id='footer' hidden={false}>
-                <div className='footer' style={{ backgroundColor: this.props.color[0][1] }}>
+                <div className='footer' style={{ backgroundColor: color[0][1] }}>
                     <div className="allColonne" id='allColonne'>
-                        {elementFooter}
+                        {elementFooterEnForme}
                     </div>
-                    <hr className='footerHR' style={{ borderColor: this.props.color[3][1] }} />
+                    <hr className='footerHR' style={{ borderColor: color[3][1] }} />
                     {social}
                     {copyright}
                 </div>
             </footer>
             :
             <footer id='footer' hidden={true}>
-                <div className='footer' style={{ backgroundColor: this.props.color[0][1] }}>
+                <div className='footer' style={{ backgroundColor: color[0][1] }}>
                     <div className="allColonne" id='allColonne'>
-                        {elementFooter}
+                        {elementFooterEnForme}
                     </div>
-                    <hr className='footerHR' style={{ borderColor: this.props.color[3][1] }} />
+                    <hr className='footerHR' style={{ borderColor: color[3][1] }} />
                     {social}
-                    {copyright}
+                    {copyrightDiv}
                 </div>
             </footer>
 

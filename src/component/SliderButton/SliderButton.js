@@ -6,9 +6,7 @@ Exemple de fonction pour props.function :
 */
 
 function updater(props) {
-    const { name } = props
-    const { etat } = props
-    const { id } = props
+    const { name, etat, id } = props
     props.function(name, !etat, id)
 }
 

@@ -22,12 +22,15 @@ import './network.css'
 */
 
 export default class Network extends Component {
-    buttonUpdater(network, id) {        
-        let newNetwork = this.props.reseau
+    buttonUpdater(network, id) {
+        const { reseau, updateState } = this.props
+        let newNetwork = reseau
         newNetwork[id] = [network[0], !network[1], network[2]]
-        this.props.updateState('reseau', newNetwork)
+        updateState('reseau', newNetwork)
     }
     render() {
+        const { reseau, updateState } = this.props
+
         const switchButton = (network, id) => (
             (network[1]) ?
                 <label className="switch">
@@ -41,26 +44,14 @@ export default class Network extends Component {
                 </label>
         )
         /* Genere le contenu du tableau reseau */
-        const reseau = this.props.reseau
-        const tabReseau = reseau.map(result => (reseau.indexOf(result) % 2) ?
-            <tr key={reseau.indexOf(result)} style={{ backgroundColor: '#9e9e9e' }}>
+        const tabReseau = reseau.map(result =>
+            <tr key={reseau.indexOf(result)} style={{ backgroundColor: (reseau.indexOf(result) % 2) ? '#9e9e9e' : null }}>
                 <th key={`nom` + reseau.indexOf(result)}>{result[0]}</th>
                 <td key={`status` + reseau.indexOf(result)}>{switchButton(result, reseau.indexOf(result))}</td>
                 <td key={`lien` + reseau.indexOf(result)}>{result[2]}</td>
                 <td key={`button` + reseau.indexOf(result)}>
                     <a href={`/reseau/#id=${reseau.indexOf(result)}`}>
-                        <i style={{ color: '#0089c8', cursor: 'pointer', marginRight: '5px' }} onClick={() => setTimeout(() => this.props.updateState('editStatus', true), 200)} className="fas fa-pen" />
-                    </a>
-                </td>
-            </tr>
-            :
-            <tr key={reseau.indexOf(result)}>
-                <th key={`nom` + reseau.indexOf(result)}>{result[0]}</th>
-                <td key={`status` + reseau.indexOf(result)}>{switchButton(result, reseau.indexOf(result))}</td>
-                <td key={`lien` + reseau.indexOf(result)}>{result[2]}</td>
-                <td key={`button` + reseau.indexOf(result)}>
-                    <a href={`/reseau/#id=${reseau.indexOf(result)}`}>
-                        <i style={{ color: '#0089c8', cursor: 'pointer', marginRight: '5px' }} onClick={() => setTimeout(() => this.props.updateState('editStatus', true), 200)} className="fas fa-pen" />
+                        <i style={{ color: '#0089c8', cursor: 'pointer', marginRight: '5px' }} onClick={() => setTimeout(() => updateState('editStatus', true), 200)} className="fas fa-pen" />
                     </a>
                 </td>
             </tr>

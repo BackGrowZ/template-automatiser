@@ -24,7 +24,8 @@ export default class Items extends Component {
     }
 
     additems(item, link) {
-        let result = this.props.items
+        const { updateState, addColonne, items } = this.props
+        let result = items
         let a = [item, link]
         result = [...result, a]
         this.setState({
@@ -32,14 +33,15 @@ export default class Items extends Component {
             itemsAdd: '',
             linkAdd: '',
         })
-        this.props.updateState('items', result)
-        setTimeout(() => this.props.addColonne(), 1)
+        updateState('items', result)
+        setTimeout(() => addColonne(), 1)
     }
 
     removeitems(id) {
-        let newListeItems = this.props.items.filter(result => result !== this.props.items[id])
-        this.props.updateState('items', newListeItems)
-        setTimeout(() => this.props.addColonne(), 1)
+        const { updateState, addColonne, items } = this.props
+        let newListeItems = items.filter(result => result !== items[id])
+        updateState('items', newListeItems)
+        setTimeout(() => addColonne(), 1)
     }
 
     handleInputChange(e) {
@@ -52,27 +54,16 @@ export default class Items extends Component {
     render() {
 
         /* Genere le contenu du tableau items */
-        const items = this.props.items
-        const tabItems = items.map(result => (items.indexOf(result) % 2) ?
-            <tr key={items.indexOf(result)} style={{ backgroundColor: '#9e9e9e' }}>
+        const { items, updateState } = this.props
+        const { itemsAdd, linkAdd } = this.state
+        const tabItems = items.map(result =>
+            <tr key={items.indexOf(result)} style={{ backgroundColor: (items.indexOf(result % 2) ? '#9e9e9e' : null) }}>
                 <th key={`id` + items.indexOf(result)} scope="row">{items.indexOf(result) + 1}</th>
                 <td key={`nom` + items.indexOf(result)}>{result[0]}</td>
                 <td key={`lien` + items.indexOf(result)}>{result[1]}</td>
                 <td key={`button` + items.indexOf(result)}>
                     <a href={`#id=${items.indexOf(result)}`}>
-                        <i style={{ color: '#0089c8', cursor: 'pointer', marginRight: '5px' }} onClick={() => setTimeout(() => this.props.updateState('editStatus', true), 200)} className="fas fa-pen" />
-                    </a>
-                    <i style={{ color: 'red', cursor: 'pointer' }} className="fas fa-times" onClick={() => this.removeitems(items.indexOf(result))} />
-                </td>
-            </tr>
-            :
-            <tr key={items.indexOf(result)}>
-                <th key={`id` + items.indexOf(result)} scope="row">{items.indexOf(result) + 1}</th>
-                <td key={`nom` + items.indexOf(result)}>{result[0]}</td>
-                <td key={`lien` + items.indexOf(result)}>{result[1]}</td>
-                <td key={`button` + items.indexOf(result)}>
-                    <a href={`/items/#id=${items.indexOf(result)}`}>
-                        <i style={{ color: '#0089c8', cursor: 'pointer', marginRight: '5px' }} onClick={() => setTimeout(() => this.props.updateState('editStatus', true), 200)} className="fas fa-pen" />
+                        <i style={{ color: '#0089c8', cursor: 'pointer', marginRight: '5px' }} onClick={() => setTimeout(() => updateState('editStatus', true), 200)} className="fas fa-pen" />
                     </a>
                     <i style={{ color: 'red', cursor: 'pointer' }} className="fas fa-times" onClick={() => this.removeitems(items.indexOf(result))} />
                 </td>
@@ -80,20 +71,13 @@ export default class Items extends Component {
         )
 
         /* Derniere ligne du tableau / Ajout Items */
-        const addItemsValue = (items.length % 2) ?
-            <tr style={{ backgroundColor: '#9e9e9e' }}>
-                <th scope="row">{items.length + 1}</th>
-                <td ><input id='itemsAdd' placeholder="nom de l'élement" onChange={this.handleInputChange} value={this.state.itemsAdd} /></td>
-                <td ><input id='linkAdd' placeholder="lien de l'élement" onChange={this.handleInputChange} value={this.state.linkAdd} /></td>
-                <td ><i style={{ color: 'green', cursor: 'pointer' }} className="fas fa-check" onClick={this.submitAddItems} /></td>
-            </tr>
-            :
-            <tr>
-                <th scope="row">{items.length + 1}</th>
-                <td ><input id='itemsAdd' placeholder="nom de l'élement" onChange={this.handleInputChange} value={this.state.itemsAdd} /></td>
-                <td ><input id='linkAdd' placeholder="lien de l'élement" onChange={this.handleInputChange} value={this.state.linkAdd} /></td>
-                <td ><i style={{ color: 'green', cursor: 'pointer' }} className="fas fa-check" onClick={this.submitAddItems} /></td>
-            </tr>
+        const addItemsValue = 
+        <tr style={{ backgroundColor: (items.length % 2) ? '#9e9e9e' : null }}>
+            <th scope="row">{items.length + 1}</th>
+            <td ><input id='itemsAdd' placeholder="nom de l'élement" onChange={this.handleInputChange} value={itemsAdd} /></td>
+            <td ><input id='linkAdd' placeholder="lien de l'élement" onChange={this.handleInputChange} value={linkAdd} /></td>
+            <td ><i style={{ color: 'green', cursor: 'pointer' }} className="fas fa-check" onClick={this.submitAddItems} /></td>
+        </tr>
 
         /* tableau items et link au complet */
         const tabAllItems =

@@ -1,17 +1,12 @@
 import React, { Fragment } from 'react'
 
 function click(props) {
-    const { functionClic } = props
-    const { nameState } = props
-    const { state } = props
+    const { functionClic, nameState, state } = props
     functionClic(nameState, !state)
 }
 
 export default function MenuLateralGaucheCategorie(props) {
-    const { title } = props
-    const { state } = props
-    const { parentState } = props
-    const { children } = props
+    const { title, children, state, parentState } = props
 
     const iconClass = (state) ? 'fas fa-angle-up' : 'fas fa-angle-down'
 
@@ -23,6 +18,10 @@ export default function MenuLateralGaucheCategorie(props) {
         />
     const menu = (state) ? <div className='TitleComponent'>{children}</div> : null
 
-    const truc = (parentState) ? <Fragment> <h2> {title} {icon} </h2> {menu} </Fragment> : <h2> {title} {icon} </h2>
-    return (truc)
+    const categorie =
+        (parentState) ?
+            <Fragment> <h2> {title} {icon} </h2> {menu} </Fragment>
+            :
+            null
+    return categorie
 }

@@ -1,9 +1,7 @@
 import React from 'react'
 
 function click(props) {
-    const { functionClic } = props
-    const { show } = props
-    const { nameState } = props
+    const { functionClic, show, nameState } = props
     functionClic(nameState, !show)
 }
 

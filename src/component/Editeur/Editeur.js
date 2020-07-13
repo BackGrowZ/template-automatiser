@@ -72,48 +72,47 @@ export default class Editeur extends Component {
     }
 
     init() {
-        if (this.state.hash !== null) {
-            const { formInput } = this.state
-            const { formSelect } = this.state
-            const { id } = this.state
+        const { formInput, formSelect, id, pathname, hash } = this.state
+        const { color, reseau, copyright } = this.props
+        if (hash !== null) {
             let formInputEdited = formInput
             let formSelectEdited = formSelect
-            switch (this.state.pathname) {
+            switch (pathname) {
                 case '/items/':
                     formInputEdited[0][2] = true
                     formInputEdited[1][2] = true
                     formSelectEdited[0][3] = true
                     this.setState({
                         titleBox: 'Lien Footer',
-                        itemsActualPosition: `${this.state.hash.slice(4)} (actuelle)`,
+                        itemsActualPosition: `${hash.slice(4)} (actuelle)`,
                         formInput: formInputEdited,
-                        pickerColor: this.props.color[1][1],
+                        pickerColor: color[1][1],
                         labelColor: 'Couleur texte'
                     })
                     setTimeout(() => this.setItems(), 100)
                     break;
 
                 case '/color/':
-                    this.setState({ pickerColor: this.props.color[this.state.id][1] })
+                    this.setState({ pickerColor: color[id][1] })
                     break;
 
                 case '/reseau/':
-                    formInputEdited[2][1] = this.props.reseau[this.state.id][2]
+                    formInputEdited[2][1] = reseau[id][2]
                     formInputEdited[2][2] = true
 
-                    this.setState({ titleBox: this.props.reseau[id][0], formInput: formInputEdited })
+                    this.setState({ titleBox: reseau[id][0], formInput: formInputEdited })
                     break;
 
                 case '/copyright/':
-                    formInputEdited[3][1] = this.props.copyright[0]
-                    formInputEdited[4][1] = this.props.copyright[1]
+                    formInputEdited[3][1] = copyright[0]
+                    formInputEdited[4][1] = copyright[1]
                     formInputEdited[3][2] = true
                     formInputEdited[4][2] = true
 
                     this.setState({
                         form: formInputEdited,
                         titleBox: 'Copyright',
-                        pickerColor: this.props.color[2][1],
+                        pickerColor: color[2][1],
                         labelColor: 'Couleur texte'
                     })
                     break;
@@ -126,18 +125,17 @@ export default class Editeur extends Component {
     }
 
     setItems() {
-        if (this.state.id) {
-            const { id } = this.state
-            const { formInput } = this.state
-            const { formSelect } = this.state
+        const { items } = this.props
+        const { id, formInput, formSelect } = this.state
+        if (id) {
             let formInputEdited = formInput
             let formSelectEdited = formSelect
             formSelectEdited[0][2] = id
 
-            formInputEdited[0][1] = this.props.items[id][0]
-            formInputEdited[1][1] = this.props.items[id][1]
+            formInputEdited[0][1] = items[id][0]
+            formInputEdited[1][1] = items[id][1]
 
-            for (let x = 0; x < this.props.items.length; x++) {
+            for (let x = 0; x < items.length; x++) {
                 formSelectEdited[0][1][x] = `${x}`
             }
 
@@ -153,11 +151,10 @@ export default class Editeur extends Component {
     }
 
     update() {
-        const { id } = this.state
+        const { id, formInput, formSelect, pathname } = this.state
+        const { reseau, items, addColonne, updateState } = this.props
         let nameUpdate
         let valueUpdate
-        const { formInput } = this.state
-        const { formSelect } = this.state
         /*=== Items ===*/
         const itemsName = formInput[0][1]
         const itemsLink = formInput[1][1]
@@ -168,42 +165,44 @@ export default class Editeur extends Component {
         const copyrightLink = formInput[4][1]
         const copyrightEditer = [copyright, copyrightLink]
         /*=== Reseau Sociaux ===*/
-        const reseauLink = this.state.formInput[2][1]
-        let reseauEditer = this.props.reseau
+        const reseauLink = formInput[2][1]
+        let reseauEditer = reseau
 
         /* === Config le updateState === */
-        if (this.state.pathname === '/items/') {
-            const itemsUpdate = this.props.items.filter(result =>
-                result !== this.props.items[id]
+        if (pathname === '/items/') {
+            const itemsUpdate = items.filter(result =>
+                result !== items[id]
             )
             itemsUpdate.splice(itemsPosition, 0, itemsEditer)
             nameUpdate = 'items'
             valueUpdate = itemsUpdate
-        } else if (this.state.pathname === '/copyright/') {
+        } else if (pathname === '/copyright/') {
             nameUpdate = 'copyright'
             valueUpdate = copyrightEditer
-        } else if (this.state.pathname === '/reseau/') {
+        } else if (pathname === '/reseau/') {
             reseauEditer[id] = [reseauEditer[id][0], reseauEditer[id][1], reseauLink]
             nameUpdate = 'reseau'
             valueUpdate = reseauEditer
         }
 
-        this.props.updateState(nameUpdate, valueUpdate)
-        setTimeout(() => this.props.addColonne(), 100)
+        updateState(nameUpdate, valueUpdate)
+        setTimeout(() => addColonne(), 100)
         this.noScroll(false)
     }
 
     updateColor(hex) {
+        const { pathname, pickerColor } = this.state
+        const { updateState, color } = this.props
         this.setState({ pickerColor: hex })
-        let newColor = this.props.color
+        let newColor = color
         let id
-        if (this.state.pathname === '/items/') {
+        if (pathname === '/items/') {
             id = 1
-        } else if (this.state.pathname === '/copyright/') {
+        } else if (pathname === '/copyright/') {
             id = 2
         }
-        newColor[id][1] = this.state.pickerColor
-        this.props.updateState('color', newColor)
+        newColor[id][1] = pickerColor
+        updateState('color', newColor)
     }
 
     noScroll(state) {
@@ -243,10 +242,10 @@ export default class Editeur extends Component {
         })
     }
     initFunction() { // place les fonctions dans le state
-        const state = this.state
+        const { noscroll, boxButtonFooter } = this.state
         /* state */
-        const noScrollState = state.noscroll
-        let boxButtonFooterState = state.boxButtonFooter
+        const noScrollState = noscroll
+        let boxButtonFooterState = boxButtonFooter
         /* Function */
         const noScroll = () => this.noScroll(noScrollState)
         const update = () => this.update()
@@ -259,7 +258,7 @@ export default class Editeur extends Component {
     }
 
     boxButton(array) { // generateur de button
-        let button = array.map(result => // result[0] = label | result[1] = state | result[2] = ClassName | result[3] = function OnClick 
+        let button = array.map(result =>
             (result[1]) ?
                 <button key={uuidv4()} className={result[2]} onClick={result[3]} > {result[0]} </button>
                 :
@@ -268,23 +267,19 @@ export default class Editeur extends Component {
         return button
     }
     render() {
+        const { pickerState, boxButtonFooter, formInput, formSelect, pickerColor, id, labelColor, titleBox } = this.state
         const handleColorChange = ({ hex }) => this.updateColor(hex)
-        // const handleColorChange = ({ hex }) => console.log(this.props.color);
-
-        // this.props.updateState('color', hex)
-
-        const color = (this.state.pickerState) ?
+        const color = (pickerState) ?
             (
                 <div>
-                    <ChromePicker color={this.state.pickerColor} onChangeComplete={handleColorChange} />
-                    {/* <ChromePicker color={this.props.color[this.state.id][1]} onChangeComplete={handleColorChange} /> */}
+                    <ChromePicker color={pickerColor} onChangeComplete={handleColorChange} />
                     <button onClick={() => this.setState({ pickerState: false })}>Valider</button>
                 </div>
             ) : null
 
-        const boxButtonFooter = this.boxButton(this.state.boxButtonFooter)
+        const boxButtonFooterResult = this.boxButton(boxButtonFooter)
 
-        const formInput = this.state.formInput.map((value, key) => (value[2]) ?
+        const formInputResult = formInput.map((value, key) => (value[2]) ?
             <div key={key} className='boxContainerInput'>
                 <label key={`label${key}`} htmlFor={key} className='boxLabelInput' > {value[0]} </label>
                 <input key={`input${key}`} name={key} value={value[1]} className='boxForm' onChange={this.onFormInputChange} />
@@ -292,19 +287,19 @@ export default class Editeur extends Component {
             : null
         )
 
-        const formSelect = this.state.formSelect.map((value, index) => (this.state.id && value[3]) ?
+        const formSelectResult = formSelect.map((value, index) => (id && value[3]) ?
             <div key={index} className='boxContainerInput'>
                 <label key={`label${index}`} className='boxLabelInput' > {value[0]} </label>
                 <select key={index} name={index} value={value[2]} className='boxForm' id='id' onChange={this.onFormSelectChange}>
                     {
                         (index === 0) ? // pour que la position commence a 1 
-                            this.state.formSelect[index][1].map((valueOption, key2) => (value[2] === valueOption) ?
+                            formSelect[index][1].map((valueOption, key2) => (value[2] === valueOption) ?
                                 <option key={key2} value={valueOption}>{parseInt(valueOption, 10) + 1} (actuelle)</option>
                                 :
                                 <option key={key2} value={valueOption}>{parseInt(valueOption, 10) + 1}</option>
                             )
                             :
-                            this.state.formSelect[index][1].map((valueOption, key2) => (this.state.id === valueOption) ?
+                            formSelect[index][1].map((valueOption, key2) => (id === valueOption) ?
                                 <option key={key2} value={valueOption}>{valueOption} (actuelle)</option>
                                 :
                                 <option key={key2} value={valueOption}>{valueOption}</option>
@@ -315,29 +310,29 @@ export default class Editeur extends Component {
             : null
         )
 
-        const colorInBox = (this.state.pickerColor) ?
+        const colorInBox = (pickerColor) ?
             <div className='boxContainerInput'>
-                <label className='boxLabelInput'>{this.state.labelColor}</label>
-                <div style={{ display: 'inline-block', height: '20px', width: '20px', background: `${this.state.pickerColor}` }} onClick={() => this.setState({ pickerState: true })}></div>
-                <span style={{ marginLeft: '.5rem', fontSize: '22px', textTransform: 'uppercase' }} onClick={() => this.setState({ pickerState: true })}>{this.state.pickerColor}</span>
+                <label className='boxLabelInput'>{labelColor}</label>
+                <div style={{ display: 'inline-block', height: '20px', width: '20px', background: `${pickerColor}` }} onClick={() => this.setState({ pickerState: true })}></div>
+                <span style={{ marginLeft: '.5rem', fontSize: '22px', textTransform: 'uppercase' }} onClick={() => this.setState({ pickerState: true })}>{pickerColor}</span>
             </div>
             : null
 
         const boxTemplate =
             <div className='BoxEdition'>
                 <div className='HeaderBoxEdition'>
-                    <div className='CrossBoxEdition'><i onClick={this.state.boxButtonFooter[0][3]} className="fas fa-times" /></div>
-                    <div className='TitleBoxEdition'>{this.state.titleBox}</div>
+                    <div className='CrossBoxEdition'><i onClick={boxButtonFooter[0][3]} className="fas fa-times" /></div>
+                    <div className='TitleBoxEdition'>{titleBox}</div>
                 </div>
                 <div className='BodyBoxEdition'>
-                    {formInput}
-                    {formSelect}
+                    {formInputResult}
+                    {formSelectResult}
                     {colorInBox}
                     {color}
 
                 </div>
                 <div className='FooterBoxEdition'>
-                    {boxButtonFooter}
+                    {boxButtonFooterResult}
                 </div>
             </div>
 

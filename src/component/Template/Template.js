@@ -52,10 +52,11 @@ export default class Template extends Component {
     /* ===== MISE EN PAGE (PAGE PRINCIPAL) ===== */
 
     handleResize() { // verrifie si le main a besoin d'etre resize
-        if (this.state.heightMain) {
+        const { heightMain } = this.state
+        if (heightMain) {
             let paddingFooter = document.getElementById('footer').offsetHeight // hauteur du foooter
             let hauteurMain = window.innerHeight - paddingFooter
-            if (this.state.heightMain !== hauteurMain) {
+            if (heightMain !== hauteurMain) {
                 this.setState({
                     paddingfooter: paddingFooter,
                     heightMain: hauteurMain
@@ -115,27 +116,28 @@ export default class Template extends Component {
     }
 
     addColonne() { // mise en page du footer
+        const { items, itemsByColonne, color } = this.state
         let all = {} // contenant de toute la mise en page 
         let result // contenant de la mise en page pour chaque passage de la boucle
         let count = 0 // reference pour le slice
-        let max = Math.ceil(this.state.items.length / this.state.itemsByColonne) // calcule le nombre total de colonne
+        let max = Math.ceil(items.length / itemsByColonne) // calcule le nombre total de colonne
         for (let x = 0; x < max; x++) { // boucle pour créer organiser les div ul et li du footer 
             result =
 
                 <div className='boxFooter' key={uuidv4()}>
                     <ul key={uuidv4()}>
                         {
-                            this.state.items.slice(count, count + this.state.itemsByColonne) // extrait les element a placer dans le footer
+                            items.slice(count, count + itemsByColonne) // extrait les element a placer dans le footer
                                 .map(result =>
                                     <a className='itemLink' href={result[1]} key={uuidv4()}>
-                                        <li className='footerItems' key={uuidv4()} style={{ color: this.state.color[1][1] }}>{result[0]}</li>
+                                        <li className='footerItems' key={uuidv4()} style={{ color: color[1][1] }}>{result[0]}</li>
                                     </a>
                                 ) // creer le(s) li par rapport au élément avec le lien
                         }
                     </ul>
                 </div>
             all[x] = result // ajoute le resulta de la boucle dans l'objet 
-            count = count + this.state.itemsByColonne
+            count = count + itemsByColonne
 
             if (x === (max - 1)) {
                 this.setState({
@@ -146,11 +148,7 @@ export default class Template extends Component {
     }
 
     render() {
-        const { menu } = this.state
-        const { menuEdit_component } = this.state
-        const { showFooter } = this.state
-        const { reseau } = this.state
-        const { menuEdit_Social } = this.state
+        const { socialStatus, heightMain, colorsStatus, itemsStatus, hiddenFooter, paddingfooter, editStatus, elementFooter, itemsByColonne, copyright, items, color, menu, menuEdit_component, showFooter, reseau, menuEdit_Social } = this.state
 
         const ShowSocial = (id) => <SliderButton etat={reseau[id][1]} id={id} name='reseau' function={this.updateState} />
 
@@ -173,25 +171,25 @@ export default class Template extends Component {
                 </MenuLateralGaucheCategorie>
             </MenuLateralGauche>
 
-        const Medit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} reseau={this.state.reseau} copyright={this.state.copyright} /> : null
-        const Mitems = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
-        const Mcolor = (this.state.colorsStatus) ? <Couleur color={this.state.color} updateState={this.updateState} /> : null
-        const Mreseau = (this.state.socialStatus) ? <Network reseau={this.state.reseau} updateState={this.updateState} /> : null
+        const Medit = (editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={items} color={color} reseau={reseau} copyright={copyright} /> : null
+        const Mitems = (itemsStatus) ? <Items items={items} itemsByColonne={itemsByColonne} elementFooter={elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
+        const Mcolor = (colorsStatus) ? <Couleur color={color} updateState={this.updateState} /> : null
+        const Mreseau = (socialStatus) ? <Network reseau={reseau} updateState={this.updateState} /> : null
         return (
             <Fragment>
                 {Medit}
-                <div className='main' style={{ minHeight: this.state.heightMain - 15, paddingBottom: this.state.paddingfooter + 15 }}>
+                <div className='main' style={{ minHeight: heightMain - 15, paddingBottom: paddingfooter + 15 }}>
                     {menuEdit}
 
                     <div>
                         <h1>Footer</h1>
                         <h2>Structure du footer</h2>
                         <ul>
-                            <li onClick={() => this.setState({ itemsStatus: !this.state.itemsStatus })}><LinkCustomer link='/items/'>Element et lien</LinkCustomer></li>
-                            <li onClick={() => this.setState({ colorsStatus: !this.state.colorsStatus })}><LinkCustomer link='/color/'>Couleur</LinkCustomer></li>
-                            <li onClick={() => this.setState({ socialStatus: !this.state.socialStatus })}><LinkCustomer link='/reseau/'>Réseau sociaux</LinkCustomer></li>
-                            <li onClick={() => this.setState({ editStatus: !this.state.editStatus })}><LinkCustomer link='/copyright/#id=0'>Copyright</LinkCustomer> </li>
-                            <li onClick={() => this.setState({ hiddenFooter: !this.state.hiddenFooter })}>Footer</li>
+                            <li onClick={() => this.setState({ itemsStatus: !itemsStatus })}><LinkCustomer link='/items/'>Element et lien</LinkCustomer></li>
+                            <li onClick={() => this.setState({ colorsStatus: !colorsStatus })}><LinkCustomer link='/color/'>Couleur</LinkCustomer></li>
+                            <li onClick={() => this.setState({ socialStatus: !socialStatus })}><LinkCustomer link='/reseau/'>Réseau sociaux</LinkCustomer></li>
+                            <li onClick={() => this.setState({ editStatus: !editStatus })}><LinkCustomer link='/copyright/#id=0'>Copyright</LinkCustomer> </li>
+                            <li onClick={() => this.setState({ hiddenFooter: !hiddenFooter })}>Footer</li>
                         </ul>
                         <div>
                             {Mitems}
@@ -200,14 +198,15 @@ export default class Template extends Component {
                         </div>
 
                     </div>
+
                     <Footer
-                        show={this.state.showFooter}
-                        color={this.state.color}
-                        items={this.state.items}
-                        copyright={this.state.copyright}
-                        itemsByColonne={this.state.itemsByColonne}
-                        elementFooter={this.state.elementFooter}
-                        reseau={this.state.reseau}
+                        show={showFooter}
+                        color={color}
+                        items={items}
+                        copyright={copyright}
+                        itemsByColonne={itemsByColonne}
+                        elementFooter={elementFooter}
+                        reseau={reseau}
                     />
                 </div>
             </Fragment>
