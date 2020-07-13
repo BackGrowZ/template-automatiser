@@ -8,6 +8,9 @@ import Couleur from '../Couleur/Couleur';
 import LinkCustomer from '../LinkCustomer/LinkCustomer';
 import Network from '../Network/Network';
 import SliderButton from '../SliderButton/SliderButton';
+import MenuLateralGauche from '../../MenuLateralGauche/MenuLateralGauche';
+import MenuLateralGaucheMainCategorie from '../../MenuLateralGauche/MenuLateralGaucheMainCategorie';
+import MenuLateralGaucheCategorie from '../../MenuLateralGauche/MenuLateralGaucheCategorie';
 
 
 export default class Template extends Component {
@@ -24,8 +27,10 @@ export default class Template extends Component {
 
             showFooter: false,
             // menu: [false, '-340px',],
-            menu: [true, '0',],
-            hiddencomponent: false,
+            menu: false,
+            menuEdit_component: false,
+            menuEdit_Social: false,
+            hiddencomponent: true,
             /* element necessaire au fonctionnement du footer */
             itemsByColonne: 2, // nombre d'item par colonne
             elementFooter: {},
@@ -81,16 +86,32 @@ export default class Template extends Component {
 
     /* ===== FIN MISE EN PAGE (PAGE PRINCIPAL) ===== */
 
-    updateState(name, value) { // pour setState a partir des component enfant 
-        if (name === 'color') {
-            document.getElementsByClassName('footer')[0].style["background-color"] = value[0][1]
-            document.getElementsByClassName('copyrightLink')[0].style["color"] = value[2][1]
-            document.getElementsByClassName('footerHR')[0].style["border-color"] = value[3][1]
-            for (let x = 0; x < this.state.items.length; x++) {
-                document.getElementsByClassName('footerItems')[x].style["color"] = value[1][1]
+    updateState(name, value, id) { // pour setState a partir des component enfant
+        if (name === 'reseau') {
+            let { reseau } = this.state
+            if (typeof value === "boolean") {
+                reseau[id][1] = value
+                this.setState({ [name]: reseau })
+            } else {
+                console.log(typeof value);
             }
+        } else if (typeof name === 'object') {
+            if (value === 'object') {
+                for (let x = 0; x < name.length; x++) {
+                    this.setState({
+                        [name[x]]: value[x]
+                    })
+                }
+            } else {
+                for (let x = 0; x < name.length; x++) {
+                    this.setState({
+                        [name[x]]: value
+                    })
+                }
+            }
+        } else {
+            this.setState({ [name]: value })
         }
-        this.setState({ [name]: value })
     }
 
     addColonne() { // mise en page du footer
@@ -126,27 +147,39 @@ export default class Template extends Component {
 
     render() {
         const { menu } = this.state
-        const { hiddencomponent } = this.state
-        const switchHandle = (name, value) => (  this.setState({ [name]: value }) )
-        const menuState = () => (menu[0]) ? this.setState({ menu: [false, '-340px'] }) : this.setState({ menu: [true, '0'] })
-        const menuEdit =
-            <div className='MenuElement' style={{ left: menu[1] }}>
-                <div className='buttonShowMenu' onClick={menuState}>
-                    {(menu[0]) ? <i style={{ color: '#fff', zoom: '2', paddingTop: '40%' }} className="fas fa-angle-left" /> : <i style={{ color: '#fff', zoom: '2', paddingTop: '40%' }} className="fas fa-angle-right" />}
-                </div>
-                <h2>Component {(hiddencomponent) ? <i style={{ color: '#fff', cursor: 'pointer' }} onClick={() => this.setState({ hiddencomponent: !hiddencomponent })} className="fas fa-angle-down" /> : <i onClick={() => this.setState({ hiddencomponent: !hiddencomponent })} style={{ color: '#fff', cursor: 'pointer' }} className="fas fa-angle-up" />}</h2>
-                <div className='TitleComponent' hidden={hiddencomponent}>
-                    <span>Footer</span> <SliderButton etat={this.state.showFooter} name='showFooter' function={switchHandle} />
-                </div>
-            </div>
+        const { menuEdit_component } = this.state
+        const { showFooter } = this.state
+        const { reseau } = this.state
+        const { menuEdit_Social } = this.state
 
-        const edit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} reseau={this.state.reseau} copyright={this.state.copyright} /> : null
-        const items = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
-        const color = (this.state.colorsStatus) ? <Couleur color={this.state.color} updateState={this.updateState} /> : null
-        const reseau = (this.state.socialStatus) ? <Network reseau={this.state.reseau} updateState={this.updateState} /> : null
+        const ShowSocial = (id) => <SliderButton etat={reseau[id][1]} id={id} name='reseau' function={this.updateState} />
+
+        const menuEdit =
+            <MenuLateralGauche show={menu} nameState='menu' functionClic={this.updateState}>
+                <MenuLateralGaucheMainCategorie title='Component' nameState='menuEdit_component' state={menuEdit_component} functionClic={this.updateState}>
+                    <Fragment>
+                        <span>Footer</span> <SliderButton etat={showFooter} name={['showFooter', 'menuEdit_Social']} function={this.updateState} />
+                    </Fragment>
+                </MenuLateralGaucheMainCategorie>
+                <MenuLateralGaucheCategorie title='Reseau Sociaux' parentState={showFooter} nameState='menuEdit_Social' state={menuEdit_Social} functionClic={this.updateState} >
+                    <Fragment>
+                        <span>Facebook</span> {ShowSocial(0)}<br />
+                        <span>GitHub</span> {ShowSocial(1)}<br />
+                        <span>Instagram</span> {ShowSocial(2)}<br />
+                        <span>Linkedin</span> {ShowSocial(3)}<br />
+                        <span>Pinterest</span> {ShowSocial(4)}<br />
+                        <span>Twitter</span> {ShowSocial(5)}<br />
+                    </Fragment>
+                </MenuLateralGaucheCategorie>
+            </MenuLateralGauche>
+
+        const Medit = (this.state.editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={this.state.items} color={this.state.color} reseau={this.state.reseau} copyright={this.state.copyright} /> : null
+        const Mitems = (this.state.itemsStatus) ? <Items items={this.state.items} itemsByColonne={this.state.itemsByColonne} elementFooter={this.state.elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
+        const Mcolor = (this.state.colorsStatus) ? <Couleur color={this.state.color} updateState={this.updateState} /> : null
+        const Mreseau = (this.state.socialStatus) ? <Network reseau={this.state.reseau} updateState={this.updateState} /> : null
         return (
             <Fragment>
-                {edit}
+                {Medit}
                 <div className='main' style={{ minHeight: this.state.heightMain - 15, paddingBottom: this.state.paddingfooter + 15 }}>
                     {menuEdit}
 
@@ -161,9 +194,9 @@ export default class Template extends Component {
                             <li onClick={() => this.setState({ hiddenFooter: !this.state.hiddenFooter })}>Footer</li>
                         </ul>
                         <div>
-                            {items}
-                            {color}
-                            {reseau}
+                            {Mitems}
+                            {Mcolor}
+                            {Mreseau}
                         </div>
 
                     </div>

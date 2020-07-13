@@ -8,7 +8,8 @@ Exemple de fonction pour props.function :
 function updater(props) {
     const { name } = props
     const { etat } = props
-    props.function(name, !etat)
+    const { id } = props
+    props.function(name, !etat, id)
 }
 
 export default function SliderButton(props) {
