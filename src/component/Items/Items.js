@@ -57,7 +57,7 @@ export default class Items extends Component {
         const { items, updateState } = this.props
         const { itemsAdd, linkAdd } = this.state
         const tabItems = items.map(result =>
-            <tr key={items.indexOf(result)} style={{ backgroundColor: (items.indexOf(result % 2) ? '#9e9e9e' : null) }}>
+            <tr key={items.indexOf(result)} style={{ backgroundColor: (items.indexOf(result) % 2) ? '#9e9e9e' : null }}>
                 <th key={`id` + items.indexOf(result)} scope="row">{items.indexOf(result) + 1}</th>
                 <td key={`nom` + items.indexOf(result)}>{result[0]}</td>
                 <td key={`lien` + items.indexOf(result)}>{result[1]}</td>
