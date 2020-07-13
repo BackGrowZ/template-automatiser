@@ -1,12 +1,14 @@
 import React from 'react'
-import { config } from '../SliderButton/Variable';
+
+/* 
+Exemple de fonction pour props.function :
+    const switchHandle = (name, value) => (  this.setState({ [name]: value }) )
+*/
 
 function updater(props) {
     const { name } = props
     const { etat } = props
-    let value = config['menu']['switchButton'][name]
-    value = !etat
-    props.function(name, value)
+    props.function(name, !etat)
 }
 
 export default function SliderButton(props) {

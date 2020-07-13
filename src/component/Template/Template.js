@@ -127,10 +127,7 @@ export default class Template extends Component {
     render() {
         const { menu } = this.state
         const { hiddencomponent } = this.state
-        const switchHandle = (name, value) =>
-            (
-                this.setState({ [name]: value })
-            )
+        const switchHandle = (name, value) => (  this.setState({ [name]: value }) )
         const menuState = () => (menu[0]) ? this.setState({ menu: [false, '-340px'] }) : this.setState({ menu: [true, '0'] })
         const menuEdit =
             <div className='MenuElement' style={{ left: menu[1] }}>
