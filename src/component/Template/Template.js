@@ -3,10 +3,7 @@ import { v4 as uuidv4 } from 'uuid'; // pour les keys
 import './template.css'
 import Footer from '../Footer/Footer';
 import Editeur from '../Editeur/Editeur'
-import Items from '../Items/Items';
-import Couleur from '../Couleur/Couleur';
 import LinkCustomer from '../LinkCustomer/LinkCustomer';
-import Network from '../Network/Network';
 import SliderButton from '../SliderButton/SliderButton';
 import MenuLateralGauche from '../../MenuLateralGauche/MenuLateralGauche';
 import MenuLateralGaucheMainCategorie from '../../MenuLateralGauche/MenuLateralGaucheMainCategorie';
@@ -19,19 +16,16 @@ export default class Template extends Component {
         super(props)
         this.state = {
             editStatus: false, // acces a l'editeur
-            itemsStatus: false, // tableau Items footer
-            colorsStatus: false, // tableau couleurs footer
-            socialStatus: false, // tableau Reseau sociaux footer
             copyrightStatus: false, // tableau copyright footer
             paddingfooter: null,
             heightMain: null,
 
             showFooter: true,
-            menu: true,
+            menu: false,
             menuEdit_component: false,
             menuEdit_Social: false,
             menuEdit_Items: false,
-            menuEdit_Style: true,
+            menuEdit_Style: false,
             /* element necessaire au fonctionnement du footer */
             itemsByColonne: 2, // nombre d'item par colonne
             elementFooter: {},
@@ -181,7 +175,7 @@ export default class Template extends Component {
     }
 
     render() {
-        const { socialStatus, heightMain, colorsStatus, itemsStatus, hiddenFooter, paddingfooter, editStatus, elementFooter, itemsByColonne, copyright, items, color, menu, menuEdit_component, showFooter, reseau, menuEdit_Social, menuEdit_Items, menuEdit_Style } = this.state
+        const { heightMain, paddingfooter, editStatus, elementFooter, itemsByColonne, copyright, items, color, menu, menuEdit_component, showFooter, reseau, menuEdit_Social, menuEdit_Items, menuEdit_Style } = this.state
         const dropDownElements = [['Monter', 'itemsUp'], ['Descendre', 'itemsDown'], ['Modifier', 'editStatus'], ['Supprimer', 'itemsDrop']]
         const copyrightMenu = <LinkCustomer link={`/copyright/#id=0`}><span style={{ cursor: 'pointer', display: 'inline-block', width: '60%' }} onClick={() => this.setState({ editStatus: !editStatus })}>Copyright</span></LinkCustomer>
         const itemsMenu = items.map((value, key) => <LinkCustomer key={key} link={`/items/#id=${key}`}><span key={key} style={{ cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>{value[0]}</span><DropDown id={key} max={items.length - 1} element={dropDownElements} updateState={this.updateState} /> {(key === items.length - 1) ? null : <br />} </LinkCustomer>)
@@ -211,33 +205,11 @@ export default class Template extends Component {
             </MenuLateralGauche>
 
         const Medit = (editStatus) ? <Editeur itemsByColonne={itemsByColonne} addColonne={this.addColonne} updateState={this.updateState} items={items} color={color} reseau={reseau} copyright={copyright} /> : null
-        const Mitems = (itemsStatus) ? <Items items={items} itemsByColonne={itemsByColonne} elementFooter={elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
-        const Mcolor = (colorsStatus) ? <Couleur color={color} updateState={this.updateState} /> : null
-        const Mreseau = (socialStatus) ? <Network reseau={reseau} updateState={this.updateState} /> : null
         return (
             <Fragment>
                 {Medit}
                 <div className='main' style={{ minHeight: heightMain - 15, paddingBottom: paddingfooter + 15 }}>
                     {menuEdit}
-
-                    <div>
-                        <h1>Footer</h1>
-                        <h2>Structure du footer</h2>
-                        <ul>
-                            <li onClick={() => this.setState({ itemsStatus: !itemsStatus })}><LinkCustomer link='/items/'>Element et lien</LinkCustomer></li>
-                            <li onClick={() => this.setState({ colorsStatus: !colorsStatus })}><LinkCustomer link='/color/'>Couleur</LinkCustomer></li>
-                            <li onClick={() => this.setState({ socialStatus: !socialStatus })}><LinkCustomer link='/reseau/'>Réseau sociaux</LinkCustomer></li>
-                            <li onClick={() => this.setState({ editStatus: !editStatus })}><LinkCustomer link='/copyright/#id=0'>Copyright</LinkCustomer> </li>
-                            <li onClick={() => this.setState({ hiddenFooter: !hiddenFooter })}>Footer</li>
-                        </ul>
-                        <div>
-                            {Mitems}
-                            {Mcolor}
-                            {Mreseau}
-                        </div>
-
-                    </div>
-
                     <Footer
                         show={showFooter}
                         color={color}
