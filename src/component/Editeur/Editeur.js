@@ -15,7 +15,7 @@ export default class Editeur extends Component {
             id: null,
 
             /* Items */
-            itemsByColonneState: true,
+            itemsByColonneState: false,
             itemsName: '',
             itemsLink: '',
             itemsPosition: [],
@@ -116,28 +116,10 @@ export default class Editeur extends Component {
                     this.setState({
                         labelColor: 'Background Color',
                         pickerColor: color[id][1],
-                        titleBox: 'Style footer'
+                        titleBox: 'Style footer',
+                        itemsByColonneState: true
                     })
                     break;
-
-                case '/styleSeparateur/':
-                    // formSelectEdited[1][3] = true
-                    this.setState({
-                        labelColor: 'Border Color',
-                        pickerColor: color[id][3],
-                        titleBox: 'Style Separateur'
-                    })
-                    break;
-
-                case '/colonne/':
-                    // formSelectEdited[1][3] = true
-                    this.setState({
-                        labelColor: 'Border Color',
-                        pickerColor: color[id][3],
-                        titleBox: 'Style Separateur'
-                    })
-                    break;
-
                 case '/copyright/':
                     formInputEdited[3][1] = copyright[0]
                     formInputEdited[4][1] = copyright[1]
@@ -311,11 +293,11 @@ export default class Editeur extends Component {
     render() {
         const { pickerState, boxButtonFooter, pathname, formInput, formSelect, pickerColor, id, labelColor, titleBox, itemsByColonneState } = this.state
         const { reseau, updateState, itemsByColonne } = this.props
-        const buttonNbColonnePlus = (itemsByColonne === 1) ? true : false  
+        const buttonNbColonnePlus = (itemsByColonne === 1) ? true : false
         const nbColonne = (itemsByColonneState) ?
             <div className='boxContainerInput'>
                 <label className='boxLabelInput'>Nombre de colonne</label>
-                <button className='btn' disabled={buttonNbColonnePlus} onClick={() => updateState('itemsByColonne', itemsByColonne - 1)}>-</button> <span style={{fontSize:'large', margin:'0 5px'}}>{itemsByColonne}</span> <button className='btn' onClick={() => updateState('itemsByColonne', itemsByColonne + 1)}>+</button>
+                <button className='btn' disabled={buttonNbColonnePlus} onClick={() => updateState('itemsByColonne', itemsByColonne - 1)}>-</button> <span style={{ fontSize: 'large', margin: '0 5px' }}>{itemsByColonne}</span> <button className='btn' onClick={() => updateState('itemsByColonne', itemsByColonne + 1)}>+</button>
             </div>
             : null
         const handleColorChange = ({ hex }) => this.updateColor(hex)
