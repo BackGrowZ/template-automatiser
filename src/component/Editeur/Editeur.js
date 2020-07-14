@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { ChromePicker } from 'react-color'
+import SliderButton from '../SliderButton/SliderButton';
 import { v4 as uuidv4 } from 'uuid'; // pour les keys
 import './edit.css'
 
@@ -51,6 +52,8 @@ export default class Editeur extends Component {
                 ['URL', '', false], // reseauLink
                 ['label', '', false], // copyright
                 ['URL', '', false], // copyrightLink
+                ['Label', '', false], // AddItemsLabel
+                ['URL', '', false], // AddItemsURL
             ],
         }
         this.setItems = this.setItems.bind(this)
@@ -101,6 +104,13 @@ export default class Editeur extends Component {
                     formInputEdited[2][2] = true
 
                     this.setState({ titleBox: reseau[id][0], formInput: formInputEdited })
+                    break;
+
+                case '/addItems/':
+                    formInputEdited[5][2] = true
+                    formInputEdited[6][2] = true
+
+                    this.setState({ formInput: formInputEdited, titleBox: 'Nouvel item' })
                     break;
 
                 case '/copyright/':
@@ -158,8 +168,11 @@ export default class Editeur extends Component {
         /*=== Items ===*/
         const itemsName = formInput[0][1]
         const itemsLink = formInput[1][1]
+        const AddItemsLabel = formInput[5][1]
+        const AddItemsURL = formInput[6][1]
         const itemsPosition = formSelect[0][2]
         const itemsEditer = [itemsName, itemsLink]
+        const newItems = [AddItemsLabel, AddItemsURL]
         /*=== Copyright ===*/
         const copyright = formInput[3][1]
         const copyrightLink = formInput[4][1]
@@ -183,6 +196,11 @@ export default class Editeur extends Component {
             reseauEditer[id] = [reseauEditer[id][0], reseauEditer[id][1], reseauLink]
             nameUpdate = 'reseau'
             valueUpdate = reseauEditer
+        } else if (pathname === '/addItems/') {
+            const additem = items
+            additem.push(newItems)
+            nameUpdate = 'items'
+            valueUpdate = additem
         }
 
         updateState(nameUpdate, valueUpdate)
@@ -267,8 +285,16 @@ export default class Editeur extends Component {
         return button
     }
     render() {
-        const { pickerState, boxButtonFooter, formInput, formSelect, pickerColor, id, labelColor, titleBox } = this.state
+        const { pickerState, boxButtonFooter, pathname, formInput, formSelect, pickerColor, id, labelColor, titleBox } = this.state
+        const { reseau, updateState } = this.props
         const handleColorChange = ({ hex }) => this.updateColor(hex)
+        const ShowSocial = (pathname === '/reseau/') ?
+            <div className='boxContainerInput'>
+                <label className='boxLabelInput' > Afficher </label>
+                <SliderButton etat={reseau[id][1]} id={id} name='reseau' function={updateState} />
+            </div>
+            : null
+
         const color = (pickerState) ?
             (
                 <div>
@@ -325,10 +351,12 @@ export default class Editeur extends Component {
                     <div className='TitleBoxEdition'>{titleBox}</div>
                 </div>
                 <div className='BodyBoxEdition'>
+                    {ShowSocial}
                     {formInputResult}
                     {formSelectResult}
                     {colorInBox}
                     {color}
+
 
                 </div>
                 <div className='FooterBoxEdition'>

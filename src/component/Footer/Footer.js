@@ -77,7 +77,7 @@ export default class Footer extends Component {
                     </div>
                     <hr className='footerHR' style={{ borderColor: color[3][1] }} />
                     {social}
-                    {copyright}
+                    {copyrightDiv}
                 </div>
             </footer>
             :

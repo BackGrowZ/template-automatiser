@@ -11,6 +11,7 @@ import SliderButton from '../SliderButton/SliderButton';
 import MenuLateralGauche from '../../MenuLateralGauche/MenuLateralGauche';
 import MenuLateralGaucheMainCategorie from '../../MenuLateralGauche/MenuLateralGaucheMainCategorie';
 import MenuLateralGaucheCategorie from '../../MenuLateralGauche/MenuLateralGaucheCategorie';
+import DropDown from '../DropDown/DropDown';
 
 
 export default class Template extends Component {
@@ -30,6 +31,8 @@ export default class Template extends Component {
             menu: false,
             menuEdit_component: false,
             menuEdit_Social: false,
+            menuEdit_Items: false,
+            menuEdit_Style: false,
             hiddencomponent: true,
             /* element necessaire au fonctionnement du footer */
             itemsByColonne: 2, // nombre d'item par colonne
@@ -37,7 +40,7 @@ export default class Template extends Component {
             copyright: ['Name Of Site by Anthony Carreta', 'http://linkToCreateur.com'], // message du copyright
             items: [['lien 1', '#link_1'], ['lien 2', '#link_2'], ['lien 3', '#link_3'], ['lien 4', '#link_4'], ['lien 5', '#link_5'], ['lien 6', '#link_6'], ['lien 7', '#link_7'], ['lien 8', '#link_8'], ['lien 9', '#link_9'], ['lien 10', '#link_10']], // listes des items avec les link
             color: [['Background', '#A7C700'], ['Element', '#000000'], ['Copyright', '#000000'], ['Separateur', '#000000']],
-            reseau: [['Facebook', true, 'https://www.facebook.com/anthony.carreta/'], ['GitHub', true, 'https://github.com/BackGrowZ/'], ['Instagram', false, 'https://www.instagram.com/'], ['Linkedin', true, 'https://www.linkedin.com/in/anthony-carreta/'], ['Pinterest', false, 'https://www.pinterest.fr/'], ['twitter', false, 'https://twitter.com/?lang=fr/']],
+            reseau: [['Facebook', true, 'https://www.facebook.com/anthony.carreta/'], ['GitHub', true, 'https://github.com/BackGrowZ/'], ['Instagram', false, 'https://www.instagram.com/'], ['Linkedin', true, 'https://www.linkedin.com/in/anthony-carreta/'], ['Pinterest', false, 'https://www.pinterest.fr/'], ['Twitter', false, 'https://twitter.com/?lang=fr/']],
         }
         this.updateState = this.updateState.bind(this)
         this.addColonne = this.addColonne.bind(this)
@@ -88,15 +91,41 @@ export default class Template extends Component {
     /* ===== FIN MISE EN PAGE (PAGE PRINCIPAL) ===== */
 
     updateState(name, value, id) { // pour setState a partir des component enfant
+        const { items } = this.state
         if (name === 'reseau') {
             let { reseau } = this.state
             if (typeof value === "boolean") {
                 reseau[id][1] = value
                 this.setState({ [name]: reseau })
-            } else {
-                console.log(typeof value);
+            } else if (id === undefined) {
+                this.setState({
+                    [name]: value
+                })
             }
-        } else if (typeof name === 'object') {
+        } else if (name === 'itemsDrop') {
+            const editedItems = items.filter(result => result !== items[id])
+            this.setState({
+                items: editedItems
+            })
+            setTimeout(() => this.addColonne(), 1)
+        } else if (name === 'itemsUp') {
+            const editedItems = items.filter(result => result !== items[id])
+            const itemsUp = items[id]
+            editedItems.splice(id - 1, 0, itemsUp)
+            this.setState({
+                items: editedItems
+            })
+            setTimeout(() => this.addColonne(), 1)
+        } else if (name === 'itemsDown') {
+            const editedItems = items.filter(result => result !== items[id])
+            const itemsDown = items[id]
+            editedItems.splice(id + 1, 0, itemsDown)
+            this.setState({
+                items: editedItems
+            })
+            setTimeout(() => this.addColonne(), 1)
+        }
+        else if (typeof name === 'object') {
             if (value === 'object') {
                 for (let x = 0; x < name.length; x++) {
                     this.setState({
@@ -148,25 +177,37 @@ export default class Template extends Component {
     }
 
     render() {
-        const { socialStatus, heightMain, colorsStatus, itemsStatus, hiddenFooter, paddingfooter, editStatus, elementFooter, itemsByColonne, copyright, items, color, menu, menuEdit_component, showFooter, reseau, menuEdit_Social } = this.state
-
-        const ShowSocial = (id) => <SliderButton etat={reseau[id][1]} id={id} name='reseau' function={this.updateState} />
-
+        const { socialStatus, heightMain, colorsStatus, itemsStatus, hiddenFooter, paddingfooter, editStatus, elementFooter, itemsByColonne, copyright, items, color, menu, menuEdit_component, showFooter, reseau, menuEdit_Social, menuEdit_Items, menuEdit_Style } = this.state
+        const dropDownElements = [['Monter', 'itemsUp'], ['Descendre', 'itemsDown'], ['Modifier', 'editStatus'], ['Supprimer', 'itemsDrop']]
+        const copyrightMenu = <LinkCustomer link={`/copyright/#id=0`}><span style={{ cursor: 'pointer', display: 'inline-block', width: '60%' }} onClick={() => this.setState({ editStatus: !editStatus })}>Copyright</span></LinkCustomer>
+        // const icon_Items = (id) => <span style={{ position: 'absolute', right: '10px' }}>{(id === 0) ? null : icon_ItemsUp(id)} {(id === items.length - 1) ? null : icon_ItemsDown(id)} {icon_ItemsDrop(id)} </span>
+        // const icon_ItemsUp = (id) => <i title="Remonter l'item" key={`icon-up-${id}`} style={{ color: '#fff', cursor: 'pointer' }} className='fas fa-long-arrow-alt-up' onClick={() => this.updateState('itemsUp', null, id)} />
+        // const icon_ItemsDown = (id) => <i title="Descendre l'item" key={`icon-down-${id}`} style={{ color: '#fff', cursor: 'pointer' }} className='fas fa-long-arrow-alt-down' onClick={() => this.updateState('itemsDown', null, id)} />
+        // const icon_ItemsDrop = (id) => <i title="Supprimer l'item" key={`icon-del-${id}`} style={{ color: 'red', cursor: 'pointer' }} className='fas fa-times' onClick={() => this.updateState('itemsUp', null, id)} />
+        const itemsMenu = items.map((value, key) => <LinkCustomer key={key} link={`/items/#id=${key}`}><span key={key} style={{ cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>{value[0]}</span><DropDown id={key}  max={items.length - 1} element={dropDownElements} updateState={this.updateState} /> {(key === items.length - 1) ? null : <br />} </LinkCustomer>)
+        const socialMenu = reseau.map((value, key) => <LinkCustomer key={key} link={`/reseau/#id=${key}`}><span key={key} style={{ display: 'inline-block', width: '100%', cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>{value[0]}</span></LinkCustomer>)
         const menuEdit =
             <MenuLateralGauche show={menu} nameState='menu' functionClic={this.updateState}>
                 <MenuLateralGaucheMainCategorie title='Component' nameState='menuEdit_component' state={menuEdit_component} functionClic={this.updateState}>
                     <Fragment>
-                        <span>Footer</span> <SliderButton etat={showFooter} name={['showFooter', 'menuEdit_Social']} function={this.updateState} />
+                        <span>Footer</span> <SliderButton etat={showFooter} name='showFooter' function={this.updateState} />
                     </Fragment>
                 </MenuLateralGaucheMainCategorie>
                 <MenuLateralGaucheCategorie title='Reseau Sociaux' parentState={showFooter} nameState='menuEdit_Social' state={menuEdit_Social} functionClic={this.updateState} >
+                    {socialMenu}
+                </MenuLateralGaucheCategorie>
+                <MenuLateralGaucheCategorie title='Items footer' parentState={showFooter} nameState='menuEdit_Items' state={menuEdit_Items} functionClic={this.updateState} >
                     <Fragment>
-                        <span>Facebook</span> {ShowSocial(0)}<br />
-                        <span>GitHub</span> {ShowSocial(1)}<br />
-                        <span>Instagram</span> {ShowSocial(2)}<br />
-                        <span>Linkedin</span> {ShowSocial(3)}<br />
-                        <span>Pinterest</span> {ShowSocial(4)}<br />
-                        <span>Twitter</span> {ShowSocial(5)}<br />
+                        {itemsMenu}
+                        <br /><LinkCustomer link={`/addItems/`}><span style={{ cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>Ajouter Items</span></LinkCustomer>
+                        {copyrightMenu}
+                    </Fragment>
+                </MenuLateralGaucheCategorie>
+                <MenuLateralGaucheCategorie title='Style footer' parentState={showFooter} nameState='menuEdit_Style' state={menuEdit_Style} functionClic={this.updateState} >
+                    <Fragment>
+                        <span>Couleur footer</span><br />
+                        <span>Separateur</span><br />
+                        <span>Nombre de colonne</span><br />
                     </Fragment>
                 </MenuLateralGaucheCategorie>
             </MenuLateralGauche>
