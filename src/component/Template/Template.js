@@ -26,14 +26,12 @@ export default class Template extends Component {
             paddingfooter: null,
             heightMain: null,
 
-            showFooter: false,
-            // menu: [false, '-340px',],
-            menu: false,
+            showFooter: true,
+            menu: true,
             menuEdit_component: false,
             menuEdit_Social: false,
             menuEdit_Items: false,
-            menuEdit_Style: false,
-            hiddencomponent: true,
+            menuEdit_Style: true,
             /* element necessaire au fonctionnement du footer */
             itemsByColonne: 2, // nombre d'item par colonne
             elementFooter: {},
@@ -124,6 +122,12 @@ export default class Template extends Component {
                 items: editedItems
             })
             setTimeout(() => this.addColonne(), 1)
+
+        } else if (name === 'itemsByColonne') {
+            this.setState({
+                [name]: value
+            })
+            setTimeout(() => this.addColonne(), 1)
         }
         else if (typeof name === 'object') {
             if (value === 'object') {
@@ -180,11 +184,7 @@ export default class Template extends Component {
         const { socialStatus, heightMain, colorsStatus, itemsStatus, hiddenFooter, paddingfooter, editStatus, elementFooter, itemsByColonne, copyright, items, color, menu, menuEdit_component, showFooter, reseau, menuEdit_Social, menuEdit_Items, menuEdit_Style } = this.state
         const dropDownElements = [['Monter', 'itemsUp'], ['Descendre', 'itemsDown'], ['Modifier', 'editStatus'], ['Supprimer', 'itemsDrop']]
         const copyrightMenu = <LinkCustomer link={`/copyright/#id=0`}><span style={{ cursor: 'pointer', display: 'inline-block', width: '60%' }} onClick={() => this.setState({ editStatus: !editStatus })}>Copyright</span></LinkCustomer>
-        // const icon_Items = (id) => <span style={{ position: 'absolute', right: '10px' }}>{(id === 0) ? null : icon_ItemsUp(id)} {(id === items.length - 1) ? null : icon_ItemsDown(id)} {icon_ItemsDrop(id)} </span>
-        // const icon_ItemsUp = (id) => <i title="Remonter l'item" key={`icon-up-${id}`} style={{ color: '#fff', cursor: 'pointer' }} className='fas fa-long-arrow-alt-up' onClick={() => this.updateState('itemsUp', null, id)} />
-        // const icon_ItemsDown = (id) => <i title="Descendre l'item" key={`icon-down-${id}`} style={{ color: '#fff', cursor: 'pointer' }} className='fas fa-long-arrow-alt-down' onClick={() => this.updateState('itemsDown', null, id)} />
-        // const icon_ItemsDrop = (id) => <i title="Supprimer l'item" key={`icon-del-${id}`} style={{ color: 'red', cursor: 'pointer' }} className='fas fa-times' onClick={() => this.updateState('itemsUp', null, id)} />
-        const itemsMenu = items.map((value, key) => <LinkCustomer key={key} link={`/items/#id=${key}`}><span key={key} style={{ cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>{value[0]}</span><DropDown id={key}  max={items.length - 1} element={dropDownElements} updateState={this.updateState} /> {(key === items.length - 1) ? null : <br />} </LinkCustomer>)
+        const itemsMenu = items.map((value, key) => <LinkCustomer key={key} link={`/items/#id=${key}`}><span key={key} style={{ cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>{value[0]}</span><DropDown id={key} max={items.length - 1} element={dropDownElements} updateState={this.updateState} /> {(key === items.length - 1) ? null : <br />} </LinkCustomer>)
         const socialMenu = reseau.map((value, key) => <LinkCustomer key={key} link={`/reseau/#id=${key}`}><span key={key} style={{ display: 'inline-block', width: '100%', cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>{value[0]}</span></LinkCustomer>)
         const menuEdit =
             <MenuLateralGauche show={menu} nameState='menu' functionClic={this.updateState}>
@@ -203,16 +203,14 @@ export default class Template extends Component {
                         {copyrightMenu}
                     </Fragment>
                 </MenuLateralGaucheCategorie>
-                <MenuLateralGaucheCategorie title='Style footer' parentState={showFooter} nameState='menuEdit_Style' state={menuEdit_Style} functionClic={this.updateState} >
+                <MenuLateralGaucheCategorie title='Paramètres footer' parentState={showFooter} nameState='menuEdit_Style' state={menuEdit_Style} functionClic={this.updateState} >
                     <Fragment>
-                        <span>Couleur footer</span><br />
-                        <span>Separateur</span><br />
-                        <span>Nombre de colonne</span><br />
+                        <LinkCustomer link='/styleFooter/#id=0'><p style={{ margin: 0, cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>Style footer</p></LinkCustomer>
                     </Fragment>
                 </MenuLateralGaucheCategorie>
             </MenuLateralGauche>
 
-        const Medit = (editStatus) ? <Editeur addColonne={this.addColonne} updateState={this.updateState} items={items} color={color} reseau={reseau} copyright={copyright} /> : null
+        const Medit = (editStatus) ? <Editeur itemsByColonne={itemsByColonne} addColonne={this.addColonne} updateState={this.updateState} items={items} color={color} reseau={reseau} copyright={copyright} /> : null
         const Mitems = (itemsStatus) ? <Items items={items} itemsByColonne={itemsByColonne} elementFooter={elementFooter} updateState={this.updateState} addColonne={this.addColonne} /> : null
         const Mcolor = (colorsStatus) ? <Couleur color={color} updateState={this.updateState} /> : null
         const Mreseau = (socialStatus) ? <Network reseau={reseau} updateState={this.updateState} /> : null

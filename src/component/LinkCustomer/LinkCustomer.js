@@ -8,7 +8,7 @@ export default function LinkCustomer(props) {
   }
 
   return (
-    <span type="button" onClick={() => handleClick(props.link)}>
+    <span onClick={() => handleClick(props.link)}>
       {props.children}
     </span>
   );
