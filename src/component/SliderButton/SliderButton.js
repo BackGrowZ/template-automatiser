@@ -1,5 +1,5 @@
 import React from 'react'
-
+import './sliderbutton.css'
 /* 
 Exemple de fonction pour props.function :
     const switchHandle = (name, value) => (  this.setState({ [name]: value }) )
