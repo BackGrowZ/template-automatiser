@@ -215,7 +215,7 @@ export default class Editeur extends Component {
     }
 
     updateColor(hex) {
-        const { pathname, pickerColor } = this.state
+        const { pathname } = this.state
         const { updateState, color } = this.props
         this.setState({ pickerColor: hex })
         let newColor = color
@@ -224,8 +224,10 @@ export default class Editeur extends Component {
             id = 1
         } else if (pathname === '/copyright/') {
             id = 2
+        } else if (pathname === '/styleFooter/') {
+            id = 0
         }
-        newColor[id][1] = pickerColor
+        newColor[id][1] = hex
         updateState('color', newColor)
     }
 

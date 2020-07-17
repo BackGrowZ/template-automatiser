@@ -9,6 +9,8 @@ import MenuLateralGauche from '../../MenuLateralGauche/MenuLateralGauche';
 import MenuLateralGaucheMainCategorie from '../../MenuLateralGauche/MenuLateralGaucheMainCategorie';
 import MenuLateralGaucheCategorie from '../../MenuLateralGauche/MenuLateralGaucheCategorie';
 import DropDown from '../DropDown/DropDown';
+// import Prism from "../Prism/Prism";
+// import { exemple } from "../Prism/code/exemple";
 
 
 export default class Template extends Component {
@@ -16,7 +18,6 @@ export default class Template extends Component {
         super(props)
         this.state = {
             editStatus: false, // acces a l'editeur
-            copyrightStatus: false, // tableau copyright footer
             paddingfooter: null,
             heightMain: null,
 
@@ -27,11 +28,11 @@ export default class Template extends Component {
             menuEdit_Items: false,
             menuEdit_Style: false,
             /* element necessaire au fonctionnement du footer */
-            itemsByColonne: 2, // nombre d'item par colonne
+            itemsByColonne: 1, // nombre d'item par colonne
             elementFooter: {},
             copyright: ['Name Of Site by Anthony Carreta', 'http://linkToCreateur.com'], // message du copyright
-            items: [['lien 1', '#link_1'], ['lien 2', '#link_2'], ['lien 3', '#link_3'], ['lien 4', '#link_4'], ['lien 5', '#link_5'], ['lien 6', '#link_6'], ['lien 7', '#link_7'], ['lien 8', '#link_8'], ['lien 9', '#link_9'], ['lien 10', '#link_10']], // listes des items avec les link
-            color: [['Background', '#A7C700'], ['Element', '#000000'], ['Copyright', '#000000'], ['Separateur', '#000000']],
+            items: [['lien 1', '#link_1'], ['lien 2', '#link_2'], ['lien 3', '#link_3'], ['lien 4', '#link_4'], ['lien 5', '#link_5']], // listes des items avec les link
+            color: [['Background', '#dadada'], ['Element', '#000000'], ['Copyright', '#000000'], ['Separateur', '#000000']],
             reseau: [['Facebook', true, 'https://www.facebook.com/anthony.carreta/'], ['GitHub', true, 'https://github.com/BackGrowZ/'], ['Instagram', false, 'https://www.instagram.com/'], ['Linkedin', true, 'https://www.linkedin.com/in/anthony-carreta/'], ['Pinterest', false, 'https://www.pinterest.fr/'], ['Twitter', false, 'https://twitter.com/?lang=fr/']],
         }
         this.updateState = this.updateState.bind(this)
@@ -99,7 +100,6 @@ export default class Template extends Component {
             this.setState({
                 items: editedItems
             })
-            setTimeout(() => this.addColonne(), 1)
         } else if (name === 'itemsUp') {
             const editedItems = items.filter(result => result !== items[id])
             const itemsUp = items[id]
@@ -107,7 +107,6 @@ export default class Template extends Component {
             this.setState({
                 items: editedItems
             })
-            setTimeout(() => this.addColonne(), 1)
         } else if (name === 'itemsDown') {
             const editedItems = items.filter(result => result !== items[id])
             const itemsDown = items[id]
@@ -115,13 +114,15 @@ export default class Template extends Component {
             this.setState({
                 items: editedItems
             })
-            setTimeout(() => this.addColonne(), 1)
 
         } else if (name === 'itemsByColonne') {
             this.setState({
                 [name]: value
             })
-            setTimeout(() => this.addColonne(), 1)
+        } else if (name === 'color') {
+            this.setState({
+                [name]: value
+            })
         }
         else if (typeof name === 'object') {
             if (value === 'object') {
@@ -140,6 +141,7 @@ export default class Template extends Component {
         } else {
             this.setState({ [name]: value })
         }
+        setTimeout(() => this.addColonne(), 1)
     }
 
     addColonne() { // mise en page du footer
@@ -183,24 +185,18 @@ export default class Template extends Component {
         const menuEdit =
             <MenuLateralGauche show={menu} nameState='menu' functionClic={this.updateState}>
                 <MenuLateralGaucheMainCategorie title='Component' nameState='menuEdit_component' state={menuEdit_component} functionClic={this.updateState}>
-                    <Fragment>
-                        <span>Footer</span> <SliderButton etat={showFooter} name='showFooter' function={this.updateState} />
-                    </Fragment>
+                    <span>Footer</span> <SliderButton etat={showFooter} name='showFooter' function={this.updateState} />
                 </MenuLateralGaucheMainCategorie>
                 <MenuLateralGaucheCategorie title='Reseau Sociaux' parentState={showFooter} nameState='menuEdit_Social' state={menuEdit_Social} functionClic={this.updateState} >
                     {socialMenu}
                 </MenuLateralGaucheCategorie>
                 <MenuLateralGaucheCategorie title='Items footer' parentState={showFooter} nameState='menuEdit_Items' state={menuEdit_Items} functionClic={this.updateState} >
-                    <Fragment>
-                        {itemsMenu}
-                        <br /><LinkCustomer link={`/addItems/`}><span style={{ cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>Ajouter Items</span></LinkCustomer>
-                        {copyrightMenu}
-                    </Fragment>
+                    {itemsMenu}
+                    <br /><LinkCustomer link={`/addItems/`}><span style={{ cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>Ajouter Items</span></LinkCustomer>
+                    {copyrightMenu}
                 </MenuLateralGaucheCategorie>
                 <MenuLateralGaucheCategorie title='Paramètres footer' parentState={showFooter} nameState='menuEdit_Style' state={menuEdit_Style} functionClic={this.updateState} >
-                    <Fragment>
-                        <LinkCustomer link='/styleFooter/#id=0'><p style={{ margin: 0, cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>Style footer</p></LinkCustomer>
-                    </Fragment>
+                    <LinkCustomer link='/styleFooter/#id=0'><p style={{ margin: 0, cursor: 'pointer' }} onClick={() => this.setState({ editStatus: !editStatus })}>Style footer</p></LinkCustomer>
                 </MenuLateralGaucheCategorie>
             </MenuLateralGauche>
 
@@ -210,6 +206,7 @@ export default class Template extends Component {
                 {Medit}
                 <div className='main' style={{ minHeight: heightMain - 15, paddingBottom: paddingfooter + 15 }}>
                     {menuEdit}
+                    {/* <Prism code={exemple} /> */}
                     <Footer
                         show={showFooter}
                         color={color}
